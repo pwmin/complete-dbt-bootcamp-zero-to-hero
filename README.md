@@ -195,3 +195,10 @@ This is my learning journey.
         - Very production-ready.
         - For larger tables you want to scale.
         - Will be covered later in the course.
+- Can look inside the 'target' folder to see the actual SQL that was passed to Snowflake during `dbt run` (e.g., for debugging).
+    - Hmm, I wonder if the compilation ever runs into CTE naming conflicts.
+- If we were to err on the side of caution and want to be conservative with costs, I think we might want to do this instead:
+    - In 'dbt_project.yml', specify dim models to be materialized as views instead of tables (or just don't specify at all, although we might want to be explicit rather than implicit).
+    - In 'dim_hosts_cleansed.sql' and 'dim_listings_cleansed.sql', delete the now-redundant `config()` macros.
+    - In 'dim_listings_w_hosts.sql', add the `config()` macro and specify table materialization.
+    - Seems to be a matter of style, existing conventions, and/or how many models must be managed. Decisions, decisions.
