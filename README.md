@@ -159,3 +159,6 @@ This is my learning journey.
 - Instead of making a new folder named 'core', we'll make two new folders named 'dim' and 'fct'.
 - Jinja is an open-source Pythonic template engine.
     - Using this, we can define things like loops and conditional statements.
+    - Neat, it can be used to add recursive model references (e.g., see fct_reviews.sql).
+- Can run `dbt run --full-refresh` to rebuild every table, including incremental ones.
+    - E.g., could be useful when an upstream schema changes.
