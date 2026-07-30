@@ -162,3 +162,36 @@ This is my learning journey.
     - Neat, it can be used to add recursive model references (e.g., see fct_reviews.sql).
 - Can run `dbt run --full-refresh` to rebuild every table, including incremental ones.
     - E.g., could be useful when an upstream schema changes.
+- Incremental strategies
+    - append
+        - Pros:
+            - Simplest.
+            - Fully-transparent.
+        - Cons:
+            - No duplicate checks.
+            - We'd probably want to use a more advanced strategy in prod.
+    - merge
+        - Is supported in Snowflake and most other warehouses.
+        - Pros: 
+            - Idempotent (no duplicates).
+            - Ensures only new records are inserted and old records are updated.
+        - Cons:
+            - Slower.
+            - Requires specifying a unique key (e.g., `review_id` of `src_reviews`).
+    - delete + insert
+        - Pros:
+            - Works in warehouses without merge support.
+            - Simple mental model.
+        - Cons:
+            - Two operations: Delete all records we'd like to update, re-add everything in incremental batch.
+            - Also requires specifying a unique key.
+    - insert-overwrite
+        - Pros:
+            - Fast for partitioned tables (e.g., by date).
+        - Cons:
+            - Requires partitioning.
+            - All-or-nothing (replaces whole partitions).
+    - microbatch
+        - Very production-ready.
+        - For larger tables you want to scale.
+        - Will be covered later in the course.
