@@ -1,4 +1,4 @@
-This is my learning journey.
+**This is my learning journey.**
 
 # Section 1: Course Introduction
 - dbt?
