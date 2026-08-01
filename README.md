@@ -202,3 +202,12 @@
     - In 'dim_hosts_cleansed.sql' and 'dim_listings_cleansed.sql', delete the now-redundant `config()` macros.
     - In 'dim_listings_w_hosts.sql', add the `config()` macro and specify table materialization.
     - Seems to be a matter of style, existing conventions, and/or how many models must be managed. Decisions, decisions.
+
+# Section 5: Seeds and Sources
+- dbt provides tools for defining both.
+- Seeds?
+    - Local files (smaller datasets) that you upload to the warehouse from dbt.
+- Sources?
+    - Abstraction layer on top of your input tables.
+    - Already in the warehouse because it's been integrated by a tool (e.g., Fivetran, Airbyte, or any custom ETL process).
+    - dbt provides tools to make sure sources are up to date, and to alert you if there are stale sources (all automated).
