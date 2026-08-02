@@ -207,6 +207,8 @@
 - dbt provides tools for defining both.
 - Seeds?
     - Local files (smaller datasets) that you upload to the warehouse from dbt.
+    - Can simply run `dbt seed` to make a table in the warehouse and populate it with data from the CSV - whoa!
+        - And the column is of date type! dbt internally makes a pass on the CSV and figures out the appropriate schema automatically. I'm already curious about how good this is. Maybe it's on the level of Pandas or Spark inferring schema?
 - Sources?
     - Abstraction layer on top of your input tables.
     - Already in the warehouse because it's been integrated by a tool (e.g., Fivetran, Airbyte, or any custom ETL process).
