@@ -38,7 +38,7 @@
         - Error alerts.
     - Must manage incremental load in event-based (i.e., "fact" or "fct") tables.
         - Don't want to rebuild whole table each time; only want to add new records at the end.
-    - Must manage slowly changing dimensions.
+    - Must manage slowly changing dimensions (SCDs).
         - Keep history of changes so we can go back in time.
     - Last but not least, easy-to-access-and-maintain documentation.
 - Snowflake authentication changes as of Nov 2025:
@@ -225,3 +225,14 @@
             - I.e., if this were integrated in a CI/CD pipeline, it would fail, as it should.
     - In general, we want to apply source freshness on third party sources.
 - Instead of running `dbt run`, we can simply run `dbt compile` which goes through all our models, YAML files, tests, etc. to check if all the references, template tags, etc. are correct.
+
+# Section 6: Snapshots
+- The way dbt handles keeping history of changes (e.g., in email addresses) is called type 2 SCDs.
+    - Adds two extra timestamp columns: `dbt_valid_from` and `dbt_valid_to`.
+    - If a record is still valid, its `dbt_valid_to` value is null.
+    - If there's a change, the existing record's `dbt_valid_to` is filled with the timestamp of the change, and a new record is added.
+    - I.e., an easy way to see the current version is by filtering down to rows `WHERE dbt_valid_to IS NULL`.
+- Snapshots live in the 'snapshots' folder.
+- Two strategies to get an SCD rolling:
+    - Timestamp: Define a unique key and an `updated_at` column on the source model, and dbt uses these to determine changes.
+    - Check: Specify one or more -- or even all -- columns in the source data; dbt will look at these, and if any values change, it will add new record(s).
