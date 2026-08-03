@@ -263,3 +263,11 @@
 - After artificially updating the `raw_listings` table's row `WHERE ID = 3176` and running `dbt snapshot` again, we can see the `scd_raw_listings` table now contains two rows for this ID.
     - As expected, the old row's `dbt_valid_to` has been set to the timestamp when we ran the update, denoting the life cycle of this row is closed.
     - And a new row has been added, whose `dbt_valid_from` value is equal to the old row's `dbt_valid_to` value -- makes sense.
+
+# Section 7: Tests
+- Learning objectives:
+    - Understand unit tests and data tests.
+    - Understand how these tests can be defined.
+    - Configure built-in generic data tests.
+    - Create your own singular data tests.
+    - Create unit tests for your data.
