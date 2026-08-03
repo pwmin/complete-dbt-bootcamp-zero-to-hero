@@ -1,0 +1,14 @@
+# Giving aliases to actual tables in Snowflake.
+# Here we're defining a single database and a single schema.
+sources:
+  - name: airbnb
+    schema: raw
+    tables:
+      - name: listings
+        identifier: raw_listings
+
+      - name: hosts
+        identifier: raw_hosts
+
+      - name: reviews
+        identifier: raw_reviews

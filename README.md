@@ -213,3 +213,7 @@
     - Abstraction layer on top of your input tables.
     - Already in the warehouse because it's been integrated by a tool (e.g., Fivetran, Airbyte, or any custom ETL process).
     - dbt provides tools to make sure sources are up to date, and to alert you if there are stale sources (all automated).
+    - Can be defined in any YAML file in the 'models' folder.
+    - Having this abstraction helps in case raw tables move, or if you have different instances which use different schemas, etc.
+        - Instead of hard-coding a direct reference to a table that's in the warehouse, we can reference our sources, using the `source()` macro.
+- Instead of running `dbt run`, we can simply run `dbt compile` which goes through all our models, YAML files, tests, etc. to check if all the references, template tags, etc. are correct.
