@@ -216,4 +216,12 @@
     - Can be defined in any YAML file in the 'models' folder.
     - Having this abstraction helps in case raw tables move, or if you have different instances which use different schemas, etc.
         - Instead of hard-coding a direct reference to a table that's in the warehouse, we can reference our sources, using the `source()` macro.
+    - Sources are in prod many times, often managed by other teams/clients/third parties, so we don't have control over what format they come in, whether the format changes, or whether it's fresh or stale.
+    - Later we'll learn how we can test sources, but for now we'll learn a dbt feature that helps us check source freshness: a simple configuration property in the YAML file.
+        - Can define a simple 'loaded at' column.
+            - Also good practice to have this kind of thing (e.g., 'updated at', 'created at') for fct or dim data.
+        - And run `dbt source freshness`.
+            - If there's an error, the exit code should be non-zero, so running `echo $?` returns `1`.
+            - I.e., if this were integrated in a CI/CD pipeline, it would fail, as it should.
+    - In general, we want to apply source freshness on third party sources.
 - Instead of running `dbt run`, we can simply run `dbt compile` which goes through all our models, YAML files, tests, etc. to check if all the references, template tags, etc. are correct.
