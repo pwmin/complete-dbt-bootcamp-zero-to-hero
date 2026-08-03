@@ -1,0 +1,8 @@
+snapshots:
+  - name: scd_raw_listings
+    relation: source('airbnb', 'listings')
+    config:
+      unique_key: id
+      strategy: timestamp
+      updated_at: updated_at
+      hard_deletes: invalidate  # If a record is deleted, look at the snapshot records and update the end column to denote the life cycle of this column has been completed.

@@ -232,7 +232,34 @@
     - If a record is still valid, its `dbt_valid_to` value is null.
     - If there's a change, the existing record's `dbt_valid_to` is filled with the timestamp of the change, and a new record is added.
     - I.e., an easy way to see the current version is by filtering down to rows `WHERE dbt_valid_to IS NULL`.
-- Snapshots live in the 'snapshots' folder.
-- Two strategies to get an SCD rolling:
-    - Timestamp: Define a unique key and an `updated_at` column on the source model, and dbt uses these to determine changes.
+    - Some implementations use a vastly future date like '9999-12-31' instead of null, which works too and there's a dbt config that allows this.
+        - Based on my experience, this would make it easier to write filter-by-date queries.
+- By usual dbt convention, snapshot definitions/configs live in the 'snapshots' folder.
+- Two (actually three, as seen in part 34) strategies to get an SCD rolling:
+    - Timestamp: Define a unique key and an `updated_at` column on the source model, and dbt uses these to determine changes. Very clean and explicit.
     - Check: Specify one or more -- or even all -- columns in the source data; dbt will look at these, and if any values change, it will add new record(s).
+    - If you're an advanced user, you can make a custom solution as a macro.
+- Again, source data can change whenever.
+    - E.g., an Airbnb host might update various properties of their listing.
+    - In a real world pipeline, we want to keep track of this info; we don't want to lose history of the data.
+    - Makes sense; reminds me of the employee history data I often worked with.
+- Starting from dbt 1.9, snapshot implementation is managed via YAML files.
+    - Can put them in whatever's defined in `snapshot-paths` in 'dbt_project.yml', or put them anywhere in the 'models' folder.
+    - In this course, we'll go with one snapshot per file, but it's subjective; it's up to you or the org how you want to organize your snapshots.
+    - Instructor's suggestion (not for this course): Put snapshot files beside your model definitions with some sort of `snapshot` affix, so if someone were to look at your model definition, they can easily see the snapshot logic too.
+- What if there's no change in the data, but someone deletes a record? How can the snapshot engine pick this up?
+    - The config variable for this is called `hard_deletes`.
+    - By default, dbt ignores deletions.
+    - But in the case of our 'raw_listings_snapshot.yml' file, we want to `invalidate` -- see code comment.
+    - Starting from dbt 1.9, there's a new option called `new_record` which adds a Boolean column called `dbt_is_deleted` to the snapshot table.
+        - If an original record is deleted, this flag is set to true.
+- We don't want to run `dbt run`; instead, we run `dbt snapshot`.
+    - We could also run `dbt build` which would execute the seed, run, snapshot, and test as a full package, but we won't do it here because we've already snapshotted the `raw_listings` table.
+- Looking at the newly created `scd_raw_listings` table, dbt included four new columns:
+    - `dbt_scd_id`: Just an internal hashed ID for dbt; no need to worry about this.
+    - `dbt_updated_at` and `dbt_valid_from` initially contain the exact same values, because this is the first snapshot.
+        - `dbt_updated_at` seems to just be a copy of `updated_at` -- intentional redundancy?
+    - `dbt_valid_to` values are set to null, as expected.
+- After artificially updating the `raw_listings` table's row `WHERE ID = 3176` and running `dbt snapshot` again, we can see the `scd_raw_listings` table now contains two rows for this ID.
+    - As expected, the old row's `dbt_valid_to` has been set to the timestamp when we ran the update, denoting the life cycle of this row is closed.
+    - And a new row has been added, whose `dbt_valid_from` value is equal to the old row's `dbt_valid_to` value -- makes sense.
