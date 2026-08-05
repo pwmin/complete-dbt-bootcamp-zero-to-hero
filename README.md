@@ -271,3 +271,22 @@
     - Configure built-in generic data tests.
     - Create your own singular data tests.
     - Create unit tests for your data.
+- dbt has two types of tests:
+    - Unit tests
+        - These test transformations with a small sample of mock / hard-coded data you provide.
+        - Like unit tests in software engineering.
+    - Data tests
+        - These test the integrity and quality of the data in the warehouse, and not from a mock / hard-coded dataset.
+        - Like integration tests in software engineering.
+        - Most sophisticated of the three.
+        - dbt has two types of data tests:
+            - Generic
+                - Common tests available as plug-and-play.
+                - Four types: unique, not null, accepted values, and relationships (similar to foreign keys).
+                - We can also define our own "custom" generic tests, so we can extend generic tests with our own implementation -- interesting...
+            - Singular
+                - Custom SQL queries we write, stored as tests, and expected to return an empty result set.
+                - If any record is returned, the test fails.
+        - Can also import tests from third party packages.
+    - It also supports a feature called "contracts" which the instructor considers a part of tests.
+        - Enforces model schema (e.g., column names, types, constraints) so we can catch if it changes for some reason.
