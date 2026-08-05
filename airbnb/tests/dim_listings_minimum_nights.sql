@@ -4,5 +4,6 @@ FROM
     {{ ref('dim_listings_cleansed') }}
 WHERE
     minimum_nights < 1
-LIMIT
-    10 -- For scalability; we just want a sample, not millions of records.
+-- We might want to limit the results for scalability (i.e., when we want just a sample, not millions of rows).
+-- LIMIT
+--     10
