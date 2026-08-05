@@ -312,3 +312,4 @@
         - Setting this to `true` then running `dbt test` results in a table being created in a schema called `<your_target_schema_name>_dbt_test__audit` (by default) in the warehouse for each test result.
             - Can change the schema using the `schema` tag.
         - For passed tests, the corresponding tables are empty, as expected.
+- Can run `dbt test -s <singular_test_name_with_or_without_file_extension>` to run one specific test.
