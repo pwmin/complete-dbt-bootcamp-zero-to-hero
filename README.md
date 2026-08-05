@@ -282,7 +282,10 @@
         - dbt has two types of data tests:
             - Generic
                 - Common tests available as plug-and-play.
-                - Four types: unique, not null, accepted values, and relationships (similar to foreign keys).
+                - Four types: `unique`, `not_null`, `accepted_values`, and `relationships` (similar to foreign keys).
+                    - Why bother adding these via dbt when we could enforce (some or all of) these in the warehouse layer?
+                        - Snowflake has a native constraints feature.
+                        - But others (e.g., Databricks, Athena, Redshift) might not.
                 - We can also define our own "custom" generic tests, so we can extend generic tests with our own implementation -- interesting...
             - Singular
                 - Custom SQL queries we write, stored as tests, and expected to return an empty result set.
@@ -290,3 +293,13 @@
         - Can also import tests from third party packages.
     - It also supports a feature called "contracts" which the instructor considers a part of tests.
         - Enforces model schema (e.g., column names, types, constraints) so we can catch if it changes for some reason.
+- We're making a new file called 'schema.yml' in the 'models' folder.
+    - This is conventional; we can find it in almost every project.
+    - But we can call this '<whatever>.yml'.
+    - Generally, we can put as many YAML files with any name in any folder we wish.
+    - As long as every property for a certain model/source is listed in a single YAML file, we're good to go.
+    - In older dbt projects especially, we might see a line containing `version: 2` at the top of YAML files.
+        - This is for historical purposes and is now completely optional.
+        - Just meant earlier that this is a certain version of YAML descriptor syntax in dbt.
+    - The `data_tests` tag is modern; its legacy version is `tests`.
+        - There was a time when data tests and unit tests weren't separated so explicitly.
