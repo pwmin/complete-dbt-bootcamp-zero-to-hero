@@ -22,7 +22,8 @@ models:
                   'Entire home/apt',
                   'Private room',
                   'Shared room',
-                  'Hotel room'
+                  'Hotel room',
+                  # 'Hotel room - break this'
                 ]
 
   - name: dim_hosts_cleansed

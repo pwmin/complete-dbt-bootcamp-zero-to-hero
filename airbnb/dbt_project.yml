@@ -38,3 +38,7 @@ models:
       +materialized: table
     src:
       +materialized: ephemeral
+
+# data_tests:
+  # +store_failures: true  # Can be used to output test results (both passed and failed) into warehouse.
+  # +schema: _test_failures  # Can be used to override the default test result schema.

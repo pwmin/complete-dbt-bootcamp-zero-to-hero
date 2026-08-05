@@ -303,3 +303,12 @@
         - Just meant earlier that this is a certain version of YAML descriptor syntax in dbt.
     - The `data_tests` tag is modern; its legacy version is `tests`.
         - There was a time when data tests and unit tests weren't separated so explicitly.
+- Can run `dbt test -x` to stop the execution after encountering the first failure.
+- Can command + click the file linked in Terminal to open the test SQL that was compiled.
+- What if we want to keep test failures in prod (e.g., for debugging)?
+    - Can parse the logs, or...
+    - Can use third party packages like Elementary Data that helps you keep track of tests, or...
+    - An easy way: Use a built-in flag called `data_tests` in 'dbt_project.yml'.
+        - Setting this to `true` then running `dbt test` results in a table being created in a schema called `<your_target_schema_name>_dbt_test__audit` (by default) in the warehouse for each test result.
+            - Can change the schema using the `schema` tag.
+        - For passed tests, the corresponding tables are empty, as expected.
