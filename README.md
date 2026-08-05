@@ -287,23 +287,27 @@
                         - Snowflake has a native constraints feature.
                         - But others (e.g., Databricks, Athena, Redshift) might not.
                 - We can also define our own "custom" generic tests, so we can extend generic tests with our own implementation -- interesting...
+                - We're making a new file called 'schema.yml' in the 'models' folder.
+                    - This is conventional; we can find it in almost every project.
+                    - But we can call this '<whatever>.yml'.
+                    - Generally, we can put as many YAML files with any name in any folder we wish.
+                    - As long as every property for a certain model/source is listed in a single YAML file, we're good to go.
+                    - In older dbt projects especially, we might see a line containing `version: 2` at the top of YAML files.
+                        - This is for historical purposes and is now completely optional.
+                        - Just meant earlier that this is a certain version of YAML descriptor syntax in dbt.
+                    - The `data_tests` tag is modern; its legacy version is `tests`.
+                        - There was a time when data tests and unit tests weren't separated so explicitly.
             - Singular
                 - Custom SQL queries we write, stored as tests, and expected to return an empty result set.
                 - If any record is returned, the test fails.
+                - E.g., see 'airbnb/tests/dim_listings_minimum_nights.sql'.
         - Can also import tests from third party packages.
     - It also supports a feature called "contracts" which the instructor considers a part of tests.
         - Enforces model schema (e.g., column names, types, constraints) so we can catch if it changes for some reason.
-- We're making a new file called 'schema.yml' in the 'models' folder.
-    - This is conventional; we can find it in almost every project.
-    - But we can call this '<whatever>.yml'.
-    - Generally, we can put as many YAML files with any name in any folder we wish.
-    - As long as every property for a certain model/source is listed in a single YAML file, we're good to go.
-    - In older dbt projects especially, we might see a line containing `version: 2` at the top of YAML files.
-        - This is for historical purposes and is now completely optional.
-        - Just meant earlier that this is a certain version of YAML descriptor syntax in dbt.
-    - The `data_tests` tag is modern; its legacy version is `tests`.
-        - There was a time when data tests and unit tests weren't separated so explicitly.
-- Can run `dbt test -x` to stop the execution after encountering the first failure.
+- Commands:
+    - `dbt test`
+    - `dbt test -x` to stop the execution after encountering the first failure.
+    - `dbt test -s <test_name>` to run one specific test.
 - Can command + click the file linked in Terminal to open the test SQL that was compiled.
 - What if we want to keep test failures in prod (e.g., for debugging)?
     - Can parse the logs, or...
@@ -312,4 +316,3 @@
         - Setting this to `true` then running `dbt test` results in a table being created in a schema called `<your_target_schema_name>_dbt_test__audit` (by default) in the warehouse for each test result.
             - Can change the schema using the `schema` tag.
         - For passed tests, the corresponding tables are empty, as expected.
-- Can run `dbt test -s <singular_test_name_with_or_without_file_extension>` to run one specific test.
