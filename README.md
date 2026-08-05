@@ -272,9 +272,6 @@
     - Create your own singular data tests.
     - Create unit tests for your data.
 - dbt has two types of tests:
-    - Unit tests
-        - These test transformations with a small sample of mock / hard-coded data you provide.
-        - Like unit tests in software engineering.
     - Data tests
         - These test the integrity and quality of the data in the warehouse, and not from a mock / hard-coded dataset.
         - Like integration tests in software engineering.
@@ -302,12 +299,18 @@
                 - If any record is returned, the test fails.
                 - E.g., see 'airbnb/tests/dim_listings_minimum_nights.sql'.
         - Can also import tests from third party packages.
+    - Unit tests
+        - These test transformations (i.e., core functionality of a single step in a pipeline, like a model) with a small sample of mock / hard-coded data you provide.
+        - Like unit tests in software engineering.
+        - Where we put the file is, again, subjective. According to the instructor, because a unit test has nothing to do with the actual warehouse, and just checks the core funtionality of the model, we'll put it in a file beside the model definition (in the 'mart' folder).
+        - When should we write these? At least for critical joins and transformations, because it's an easy and early wat to catch errors in the pipeline.
     - It also supports a feature called "contracts" which the instructor considers a part of tests.
         - Enforces model schema (e.g., column names, types, constraints) so we can catch if it changes for some reason.
 - Commands:
     - `dbt test`
     - `dbt test -x` to stop the execution after encountering the first failure.
     - `dbt test -s <test_name>` to run one specific test.
+    - `dbt test -s "test_type:unit"` to run only unit tests.
 - Can command + click the file linked in Terminal to open the test SQL that was compiled.
 - What if we want to keep test failures in prod (e.g., for debugging)?
     - Can parse the logs, or...
