@@ -310,7 +310,7 @@
 - Commands:
     - `dbt test`
     - `dbt test -x` to stop the execution after encountering the first failure.
-    - `dbt test -s <test_name>` to run one specific test.
+    - `dbt test -s <test_or_model_name>` to run specific test(s).
     - `dbt test -s "test_type:unit"` to run only unit tests.
 - Can command + click the file linked in Terminal to open the test SQL that was compiled.
 - What if we want to keep test failures in prod (e.g., for debugging)?
@@ -333,3 +333,19 @@
     - The canonical place to put these is in the 'generic' subfolder within the 'test' folder.
     - Older projects might contain these in the 'macros' folder instead.
     - We wrote a new generic test called 'positive_values.sql'. This and the singular test we wrote earlier, 'dim_listings_minimum_nights.sql', are redundant. The instructor says this is okay for now.
+    - See 'minimum_row_count.sql' for examples of the below:
+        - We can customize the parameters of generic tests.
+        - We can make tests not fail the whole pipeline, but just trigger a warning, using the `severity` property in 'schema.yml' (to make it specific to a model) or a `config` in the test (to generalize it).
+            - In this case, we've made it so the test gives a warning, but gives an error for specifically the `dim_listings_cleansed` model.
+- Advanced strategy: Run tests at insert time.
+    - With data tests, the data have already been inserted into the table, and then we run tests for integrity.
+    - But with constraints, we can actually execute tests upstream, when the data is inserted.
+    - This is a relatively new feature and dependent on platform.
+    - Requirements:
+        - Must have an enforced contract on the model.
+        - Model must be table or incremental, not view or ephemeral.
+    - Theoretically we could test for a variety of things, but...
+    - "Definable" means we can specify a constraint, but it will not necessarily be "enforced"; it will show up in the metadata so it will still express some info, but the warehouse won't care if the constraint holds or not.
+    - Currently in Snowflake, only `not_null` is enforced.
+    - No need to have constraints and data tests that check for the same thing; doing so is redundant.
+- Oh, we can run `dbt run -s <model_name>`, similar to `dbt test -s <test_or_model_name>`.

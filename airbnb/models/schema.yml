@@ -1,5 +1,11 @@
 models:
   - name: dim_listings_cleansed
+    data_tests:
+      - minimum_row_count:
+          arguments:
+            min_row_count: 1000
+          severity: error
+
     columns:
       - name: listing_id
         data_tests:
@@ -38,14 +44,15 @@ models:
     columns:
       - name: host_id
         data_type: integer
+        constraints:
+          - type: not_null
         data_tests:
           - unique
-          - not_null
 
       - name: host_name
-        data_type: string 
-        data_tests:
-          - not_null
+        data_type: string
+        constraints:
+          - type: not_null
 
       - name: is_superhost
         data_type: string  # Intentionally not a Boolean.
