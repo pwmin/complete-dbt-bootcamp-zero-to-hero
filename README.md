@@ -306,6 +306,7 @@
         - When should we write these? At least for critical joins and transformations, because it's an easy and early wat to catch errors in the pipeline.
     - It also supports a feature called "contracts" which the instructor considers a part of tests.
         - Enforces model schema (e.g., column names, types, constraints) so we can catch if it changes for some reason.
+        - See section 8 notes below.
 - Commands:
     - `dbt test`
     - `dbt test -x` to stop the execution after encountering the first failure.
@@ -319,3 +320,12 @@
         - Setting this to `true` then running `dbt test` results in a table being created in a schema called `<your_target_schema_name>_dbt_test__audit` (by default) in the warehouse for each test result.
             - Can change the schema using the `schema` tag.
         - For passed tests, the corresponding tables are empty, as expected.
+
+# Section 8: Advanced Testing: Contracts and Custom Generic Tests
+- Contracts
+    - We can hard-code the schema of a model in a YAML file.
+    - Can catch very early if someone changes the schema of a model accidentally.
+    - dbt has its own keywords for data types so it can stay warehouse-agnostic.
+        - But we can also be much more specific to our warehouse of choice when defining data types.
+    - Can also catch things like whether a not-nullability of a column has changed or not.
+    - Another benefit: Teammates realize a model is contracted, so it's important to keep that specific schema and be careful if they want to change it.

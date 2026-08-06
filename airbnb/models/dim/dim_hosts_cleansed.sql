@@ -19,6 +19,7 @@ SELECT
     */
     NVL(host_name, 'Anonymous') AS host_name, 
     is_superhost,
+    -- IFF(is_superhost = 't', TRUE, FALSE) AS is_superhost, -- Can use this to test contract.
     created_at,
     updated_at
 FROM
