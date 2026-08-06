@@ -283,7 +283,7 @@
                     - Why bother adding these via dbt when we could enforce (some or all of) these in the warehouse layer?
                         - Snowflake has a native constraints feature.
                         - But others (e.g., Databricks, Athena, Redshift) might not.
-                - We can also define our own "custom" generic tests, so we can extend generic tests with our own implementation -- interesting...
+                - We can also define our own "custom" generic tests, so we can extend generic tests with our own implementation -- see section 8 notes below.
                 - We're making a new file called 'schema.yml' in the 'models' folder.
                     - This is conventional; we can find it in almost every project.
                     - But we can call this '<whatever>.yml'.
@@ -329,3 +329,7 @@
         - But we can also be much more specific to our warehouse of choice when defining data types.
     - Can also catch things like whether a not-nullability of a column has changed or not.
     - Another benefit: Teammates realize a model is contracted, so it's important to keep that specific schema and be careful if they want to change it.
+- Custom generic tests
+    - The canonical place to put these is in the 'generic' subfolder within the 'test' folder.
+    - Older projects might contain these in the 'macros' folder instead.
+    - We wrote a new generic test called 'positive_values.sql'. This and the singular test we wrote earlier, 'dim_listings_minimum_nights.sql', are redundant. The instructor says this is okay for now.
