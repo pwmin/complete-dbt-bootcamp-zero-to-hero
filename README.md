@@ -433,3 +433,10 @@
         - In rare cases (e.g., you're behind a corporate proxy), then the proxy or firewall changes things in the certificate management of dbt, and `dbt deps` won't work.
         - Currently there's nothing we can do to disable the certificate verification.
         - Workaround: Go to the package's GitHub repo and download everything to the 'dbt_packages/<package_name>' folder.
+
+# Section 10: Documentation
+- Learning objectives:
+    - Understand how to document models.
+    - Use the doc generator and server.
+    - Add assets and markdown to the doc.
+    - Discuss dev vs. prod doc serving.
