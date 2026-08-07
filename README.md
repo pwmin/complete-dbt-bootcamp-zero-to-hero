@@ -367,3 +367,25 @@
             - We'll learn much more about variable handling in later sections.
     - E.g., run `dbt compile --inline '{# This is a comment #}{% set my_name = "Zoltan" %}{{ my_name }}'` to see how it renders.
         - It renders as `Zoltan`.
+- Some built-in variables in dbt:
+    - `{{ this }}` references the model being built.
+    - `{{ target.name }}` references the name of our target, with the default defined in 'dbt_profiles.yml'.
+    - And `{{ target.database }}` and `{{ target.schema }}`, so on and so forth.
+- Some built-in macros (sometimes called functions), some we've already seen:
+    - Generic (not dbt-specific):
+        - `{{ log("Debug message", info=True) }}` prints to the console.
+        - `{{ var("user_name") }}` gets variable value.
+    - dbt-specific:
+        - `{{ ref('dim_listings_cleaned') }}` references another model.
+        - `{{ source('airbnb', 'listings') }}` references a source table.
+        - `{{ config() }}` for setting stuff at top of a SQL file.
+        - `{{ adapter.get_columns_in_relation }}` helps us work with database-level functionality.
+- Custom building blocks in dbt:
+    - `{% test ... %}` is a macro for defining a test.
+    - `{% snapshot %}`
+    - `{% docs %}` is a macro for writing documentation.
+    - `{% materialization %}` is a macro for implementing custom materializations.
+- Anatomy of a macro:
+    - `{% macro select_positive_values(model, column_name) %}` -- start with statement, name, and parameters as desired.
+    - `<macro_body>` which can include SQL, Jinja statements, references to other macros, etc.
+    - `<% endmacro % >`
