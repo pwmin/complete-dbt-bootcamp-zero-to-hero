@@ -418,3 +418,18 @@
                 - in macro get_columns_in_relation (macros/adapters/columns.sql)
             - That being said, I see the 'select_positive_values.sql' example also works with `ref()` -- maybe doing so is best practice.
     - Try running `dbt compile --inline "SELECT * FROM {{ ref('dim_listings_cleansed') }} WHERE {{ no_empty_strings(ref('dim_listings_cleansed')) }}"` (or replace `compile` with `show`).
+- We can extend our projects with several functions, macros, tests, etc. using dbt packages.
+    - See https://hub.getdbt.com
+    - Let's look at our `fct_reviews` table. Note there's no unique ID column. How might we come up with a unique identifier?
+        - We can implement our own. We could make something naive like concatenating a bunch of columns or use a standard function.
+        - What usually works best is concatenating a set of columns, then converting them to a unique string through a hash function. `dbt_utils` can do this for us, via [`generate_surrogate_key()`](https://github.com/dbt-labs/dbt-utils/tree/1.4.1/#generate_surrogate_key-source).
+            - It's cross-database, meaning if we had two projects (one that works in MySQL and another that works on Snowflake), and they had the same values in the columns, then the function will come up with the same IDs in both.
+        - See 'models/fct/fct_reviews.sql' for creation of the new `review_id` column.
+        - Note when we simply run `dbt run`, it fails as expected, due to the schema change. Remember, we set `on_schema_change='fail'`.
+        - So instead, we run `dbt run -s fct_reviews --full_refresh`.
+        - And looking on Snowflake, nice, the first column is now `review_id`, containing hashes.
+    - List desired packages in 'packages.yml', then install by running `dbt deps` (stands for "dependencies").
+        - Then dbt makes an HTTPS connection to the hub website, and this connection includes certificate verification.
+        - In rare cases (e.g., you're behind a corporate proxy), then the proxy or firewall changes things in the certificate management of dbt, and `dbt deps` won't work.
+        - Currently there's nothing we can do to disable the certificate verification.
+        - Workaround: Go to the package's GitHub repo and download everything to the 'dbt_packages/<package_name>' folder.
