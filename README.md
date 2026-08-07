@@ -361,7 +361,7 @@
             - Anything we put between comment text gets deleted and ignored when the template is rendered.
         - Statements
             - `{% set my_name = "Zoltan" %}`
-            - Variable assignments, conditions, loops, macros, etc.
+            - Variable assignments, conditionals, loops, macros, etc.
         - Expressions
             - `{{ my_name }}`
             - We'll learn much more about variable handling in later sections.
@@ -391,4 +391,30 @@
     - `<% endmacro % >`
 - See 'macros/select_positive_values.sql' for an example.
     - Run `dbt compile --inline "{{ select_positive_values('dim_listings_cleansed', 'price') }}"` to see how it compiles.
-    - Run `dbt show --inline "{{ select_positive_values('dim_listings_cleansed', 'price') }}"` to see a preview of the result.
+    - Or replace `compile` with `show` to see a preview of the result.
+- Conditional structure:
+    - `{% if <some_condition_such_as_is_incremental()> %}`
+    - `    ...`
+    - `{% else %}`
+    - `    ...`
+    - `{% endif %}`
+- Loop structure:
+    - `{% for col in columns %}`
+    - `    {{ col }}{% if not loop.last %}, {% endif %}` -- "If this is not the last iteration, append a comma and a space."
+    - `{% endfor %}`
+- Whitespace control:
+    - Sprinkle in dashes.
+    - `{%- statement -%}` means strip whitespace before and after, so on and so forth.
+- See 'macros/no_empty_strings.sql' for an advanced example.
+    - Could use `loop.last` instead to construct the SQL, but it won't be easy.
+        - Instead, this solution uses an innocent `TRUE` after the last `AND`.
+    - We deliberately didn't put `WHERE` here, because maybe we want to use this macro as part of an existing `WHERE` condition.
+    - To see how this compiles on its own, run `dbt compile --inline '{{ no_empty_strings(ref("dim_listings_cleansed")) }}'`.
+        - Be careful with the nested quotation marks.
+        - Interesting -- unlike the 'select_positive_values.sql' example, here we have to wrap the model name in `ref()`.
+            - As I predicted, this is due to it being wrapped in `adapter.get_columns_in_relation` in the macro; see error messages below.
+                - Compilation Error in sql_operation inline_query (from remote system.sql)
+                - 'str object' has no attribute 'render'
+                - in macro get_columns_in_relation (macros/adapters/columns.sql)
+            - That being said, I see the 'select_positive_values.sql' example also works with `ref()` -- maybe doing so is best practice.
+    - Try running `dbt compile --inline "SELECT * FROM {{ ref('dim_listings_cleansed') }} WHERE {{ no_empty_strings(ref('dim_listings_cleansed')) }}"` (or replace `compile` with `show`).
