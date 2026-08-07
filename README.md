@@ -389,3 +389,6 @@
     - `{% macro select_positive_values(model, column_name) %}` -- start with statement, name, and parameters as desired.
     - `<macro_body>` which can include SQL, Jinja statements, references to other macros, etc.
     - `<% endmacro % >`
+- See 'macros/select_positive_values.sql' for an example.
+    - Run `dbt compile --inline "{{ select_positive_values('dim_listings_cleansed', 'price') }}"` to see how it compiles.
+    - Run `dbt show --inline "{{ select_positive_values('dim_listings_cleansed', 'price') }}"` to see a preview of the result.
