@@ -160,6 +160,7 @@
 - Jinja is an open-source Pythonic template engine.
     - Using this, we can define things like loops and conditional statements.
     - Neat, it can be used to add recursive model references (e.g., see fct_reviews.sql).
+    - See section 9 notes below.
 - Can run `dbt run --full-refresh` to rebuild every table, including incremental ones.
     - E.g., could be useful when an upstream schema changes.
 - Incremental strategies
@@ -349,3 +350,20 @@
     - Currently in Snowflake, only `not_null` is enforced.
     - No need to have constraints and data tests that check for the same thing; doing so is redundant.
 - Oh, we can run `dbt run -s <model_name>`, similar to `dbt test -s <test_or_model_name>`.
+
+# Section 9: Jinja, Macros and Packages
+- Jinja?
+    - Templating language that lets you write dynamic, reusable SQL.
+    - Think of it as "programming inside your SQL" (e.g., variables, conditionals, loops, functions, macros).
+    - Has three types of basic building blocks:
+        - Comments
+            - `{# This is a comment #}`
+            - Anything we put between comment text gets deleted and ignored when the template is rendered.
+        - Statements
+            - `{% set my_name = "Zoltan" %}`
+            - Variable assignments, conditions, loops, macros, etc.
+        - Expressions
+            - `{{ my_name }}`
+            - We'll learn much more about variable handling in later sections.
+    - E.g., run `dbt compile --inline '{# This is a comment #}{% set my_name = "Zoltan" %}{{ my_name }}'` to see how it renders.
+        - It renders as `Zoltan`.
