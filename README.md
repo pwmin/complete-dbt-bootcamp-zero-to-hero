@@ -440,3 +440,14 @@
     - Use the doc generator and server.
     - Add assets and markdown to the doc.
     - Discuss dev vs. prod doc serving.
+- The philosophy in dbt is to keep docs as close to the source code as possible.
+    - Minimizes risk of docs and code diverging.
+- Can work with docs in two ways:
+    - Put simple pieces into YAML files (e.g., 'schema.yml').
+    - Write more comprehensive docs in standalone markdown files.
+- dbt compiles docs into a lightweight HTML service.
+    - Can be used as a static set of assets which we can put somewhere and use behind our own web server.
+    - Or we can use the built-in web server for dev purposes, at least for serving and iterating.
+- Two special cases:
+    - For customizing the landing page, a special file called 'overview.md' is used.
+    - Can store various assets like downloadables and images in a special folder, and can reference them in markdown files.
