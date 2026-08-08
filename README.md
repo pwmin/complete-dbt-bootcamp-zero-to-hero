@@ -461,3 +461,6 @@
     - Thankfully, also creates 'index.html' and other files.
     - For a prod-grade doc server, we could add these files to any static web server.
     - But for our case, a lightweight server works fine: run `dbt docs serve` -- wow, very thorough!
+- Lineage graph (data flow DAG)
+    - Note the "--select" option. If we select the `src_hosts` node, this option gets populated with `+src_hosts+`. The leading and lagging plus signs indicate we want to see everything that this model depends on (i.e., parents), and everything that is dependent on this model (i.e., children).
+    - This `+` notation is ubiquitous. E.g., if we run `dbt run -s src_hosts+`, this model and its children are executed.
