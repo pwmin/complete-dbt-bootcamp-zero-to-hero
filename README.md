@@ -451,3 +451,8 @@
 - Two special cases:
     - For customizing the landing page, a special file called 'overview.md' is used.
     - Can store various assets like downloadables and images in a special folder, and can reference them in markdown files.
+- Can generate docs by running `dbt docs generate`.
+    - Creates 'target/catalog.json', which is not very human-readable.
+    - Thankfully, also creates 'index.html' and other files.
+    - For a prod-grade doc server, we could add these files to any static web server.
+    - But for our case, a lightweight server works fine: run `dbt docs serve` -- wow, very thorough!
