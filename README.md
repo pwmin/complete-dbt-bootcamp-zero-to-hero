@@ -445,12 +445,17 @@
 - Can work with docs in two ways:
     - Put simple pieces into YAML files (e.g., 'schema.yml').
     - Write more comprehensive docs in standalone markdown files.
+        - E.g., 'models/docs.md', and the contents are referenced in 'schema.yml', using `description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'`.
 - dbt compiles docs into a lightweight HTML service.
     - Can be used as a static set of assets which we can put somewhere and use behind our own web server.
     - Or we can use the built-in web server for dev purposes, at least for serving and iterating.
 - Two special cases:
     - For customizing the landing page, a special file called 'overview.md' is used.
+        - We've made one in the 'models' folder.
+        - Note the special `__overview__` tag.
     - Can store various assets like downloadables and images in a special folder, and can reference them in markdown files.
+        - We've made an 'assets' folder and added `asset-paths` to 'dbt_project.yml'.
+        - And we ran `curl https://dbt-datasets.s3.us-east-2.amazonaws.com/input_schema.png -o assets/input_schema.png`.
 - Can generate docs by running `dbt docs generate`.
     - Creates 'target/catalog.json', which is not very human-readable.
     - Thankfully, also creates 'index.html' and other files.

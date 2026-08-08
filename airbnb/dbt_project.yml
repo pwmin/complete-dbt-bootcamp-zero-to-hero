@@ -19,6 +19,7 @@ test-paths: ["tests"]
 seed-paths: ["seeds"]  # Local data (e.g., CSVs) you want to push to your warehouse.
 macro-paths: ["macros"]  # Small reusable snippets.
 snapshot-paths: ["snapshots"]  # SCD type 2 dim tables.
+asset-paths: ["assets"]
 
 clean-targets:         # directories to be removed by `dbt clean`
   - "target"  # Created anytime you run dbt.

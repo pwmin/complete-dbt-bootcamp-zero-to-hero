@@ -29,7 +29,7 @@ models:
                 ]
 
       - name: minimum_nights
-        # TODO: Add description.
+        description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
         data_tests:
           - positive_values
 
