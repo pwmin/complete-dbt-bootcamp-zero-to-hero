@@ -464,3 +464,10 @@
 - Lineage graph (data flow DAG)
     - Note the "--select" option. If we select the `src_hosts` node, this option gets populated with `+src_hosts+`. The leading and lagging plus signs indicate we want to see everything that this model depends on (i.e., parents), and everything that is dependent on this model (i.e., children).
     - This `+` notation is ubiquitous. E.g., if we run `dbt run -s src_hosts+`, this model and its children are executed.
+
+# Section 11: Analyses, Hooks and Exposures
+- Learning objectives:
+    - Understand how to store ad-hoc analytical queries.
+    - Work with hooks to manage table permissions in a warehouse.
+    - Build a dashboard in Preset.
+    - Create an exposure to document and link to the dashboard.
