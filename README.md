@@ -471,3 +471,7 @@
     - Work with hooks to manage table permissions in a warehouse.
     - Build a dashboard in Preset.
     - Create an exposure to document and link to the dashboard.
+- Analyses?
+    - Oftentimes we want to run an ad-hoc query and not have it materialize in any way, but still use macros, templating, model references, etc.
+    - We can put queries in the 'analyses' folder (e.g., 'full_moon_no_sleep.sql').
+    - Then we can run `dbt compile`, and look inside 'target/compiled/airbnb/analyses/full_moon_no_sleep.sql' to get a copy-and-pastable query.
