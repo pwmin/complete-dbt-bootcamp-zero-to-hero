@@ -502,3 +502,8 @@
     - Will be integrated and compiled into a doc.
     - Live in YAML files -- in our case, 'models/dashboards.yml'.
     - And after re-running `dbt docs generate` and `dbt docs serve`, it shows up under the new "Exposures" section and also in the lineage graph.
+
+# Section 12: dbt Hero
+- (As in the title of this course.)
+- So far we've covered the essentials: modeling, tests, docs, SCDs, snapshots, different materializations, etc.
+- Time to take deeper dives into more advanced topics.
