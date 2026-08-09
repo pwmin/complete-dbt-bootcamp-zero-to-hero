@@ -488,3 +488,8 @@
         - As usual, there are packages that help with auditing.
         - In 'dbt_project.yml', we make an `on-run-start` hook that will ensure our audit table exists, and a `post-hook` after each model creation to add a new row to the audit table.
         - And when we run `dbt run`, we can see the `on-run-start` hook being run before the models.- And on Snowflake, upon refreshing, the `audit_log` table is there -- nice.
+- Grants?
+    - Common technical problem with warehouses and dbt: Sometimes you might be permitted to create a model (table or view) and set permissions for it, but not permitted to read newly accessed (?) models.
+    - The old workaround was to use hooks, but now we can create `grants` in 'dbt_project.yml'.
+    - We've created a `select` grant on every model to two roles (one for our dbt user, other for our BI connector user).
+    - Running `dbt run` alone won't show us these commands; instead, we can run `dbt run --debug`.
