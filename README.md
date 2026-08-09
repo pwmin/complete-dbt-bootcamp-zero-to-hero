@@ -493,3 +493,7 @@
     - The old workaround was to use hooks, but now we can create `grants` in 'dbt_project.yml'.
     - We've created a `select` grant on every model to two roles (one for our dbt user, other for our BI connector user).
     - Running `dbt run` alone won't show us these commands; instead, we can run `dbt run --debug`.
+- https://preset.io
+    - Offers a free plan to set up dashboards and connect to every major warehouse.
+    - As we saw before in the result of 'full_moon_no_sleep.sql', there are just far more data points that are 'not full moon', so raw counts aren't very useful for comparison. To convert these to percentages in Preset, we can just set the contribution mode to row.
+    - And after also converting the bars to stacked ones, it becomes pretty clear there's extremely little difference between 'full moon' and 'not full moon'. If we were to be thorough, we'd want to do a statistical test, of course.
