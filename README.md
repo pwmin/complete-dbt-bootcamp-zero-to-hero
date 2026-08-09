@@ -475,3 +475,16 @@
     - Oftentimes we want to run an ad-hoc query and not have it materialize in any way, but still use macros, templating, model references, etc.
     - We can put queries in the 'analyses' folder (e.g., 'full_moon_no_sleep.sql').
     - Then we can run `dbt compile`, and look inside 'target/compiled/airbnb/analyses/full_moon_no_sleep.sql' to get a copy-and-pastable query.
+- Hooks?
+    - Are SQLs executed at predefined times.
+    - We can inject SQL or macros to be executed when dbt starts, ends, starts to create a model, created a model, etc.
+    - Can be configured on the project, subfolder, or model level.
+    - Types:
+        - `on-run-start`: Executed at the start of dbt (run, seed, snapshot).
+        - `on-run-end`: Like above, but at the end.
+        - `pre-hook`: Executed before a model/seed/snapshot is built.
+        - `post-hook`: Like above, but after.
+    - Good for common business problems involving auditing dbt runs (e.g., when a certain model was materialized for the last time).
+        - As usual, there are packages that help with auditing.
+        - In 'dbt_project.yml', we make an `on-run-start` hook that will ensure our audit table exists, and a `post-hook` after each model creation to add a new row to the audit table.
+        - And when we run `dbt run`, we can see the `on-run-start` hook being run before the models.- And on Snowflake, upon refreshing, the `audit_log` table is there -- nice.
