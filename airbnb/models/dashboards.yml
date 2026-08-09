@@ -1,0 +1,14 @@
+exposures:
+  - name: test_dashboard
+    label: Test Dashboard
+    type: dashboard
+    maturity: low
+    url: https://cb9245ff.us1a.app.preset.io/superset/dashboard/8/?native_filters_key=IG3gJhR3MWVNp1NB-7z7zg
+    description: Just a test dashboard.
+
+    depends_on:
+      - ref('mart_fullmoon_reviews')
+
+    owner:
+      name: Patrick Min
+      email: patrickwmin@gmail.com

@@ -497,3 +497,8 @@
     - Offers a free plan to set up dashboards and connect to every major warehouse.
     - As we saw before in the result of 'full_moon_no_sleep.sql', there are just far more data points that are 'not full moon', so raw counts aren't very useful for comparison. To convert these to percentages in Preset, we can just set the contribution mode to row.
     - And after also converting the bars to stacked ones, it becomes pretty clear there's extremely little difference between 'full moon' and 'not full moon'. If we were to be thorough, we'd want to do a statistical test, of course.
+- Exposures?
+    - Are configurations that can point to external resources like reports and dashboards.
+    - Will be integrated and compiled into a doc.
+    - Live in YAML files -- in our case, 'models/dashboards.yml'.
+    - And after re-running `dbt docs generate` and `dbt docs serve`, it shows up under the new "Exposures" section and also in the lineage graph.
