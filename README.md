@@ -510,3 +510,14 @@
 
 # Section 13: Debugging Tests and Testing with dbt-expectations
 - Note that starting from dbt 1.10, when we pass arguments and configs to a test, we must do so under explicitly-written `arguments` and `config` properties, respectively.
+- We can implement many data sanity checks, and our pipeline can work syntactically well, but if something changes in our input data, it can lead to data errors.
+    - E.g., in our Airbnb example, we assume price comes in string format that starts with '$' and has numerical characters, a comma, a dot, etc. But this is an assumption that doesn't need to hold true; upstream data can change anytime.
+    - We should test against such scenarios, and make sure the data in our warehouse is correct and our models are consistent with our sources, etc.
+- https://github.com/fivetran/great_expectations
+    - An open-source data testing framework.
+    - It lists its namesake "expectations" as one of its features.
+        - Pretty much functions. Described as "assertions for data".
+        - Covers common data issues (e.g., not-null, match regex, uniqueness, in-between).
+- To allow us to use the above in dbt, there is https://github.com/metaplane/dbt-expectations.
+    - Not actually a 1:1 port; just highly inspired.
+- Errors can and will happen. We want to make sure we're the first ones to catch them, and not the executive team or other teams. Otherwise, our credibility erodes.
