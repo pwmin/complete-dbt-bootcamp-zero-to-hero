@@ -507,3 +507,6 @@
 - (As in the title of this course.)
 - So far we've covered the essentials: modeling, tests, docs, SCDs, snapshots, different materializations, etc.
 - Time to take deeper dives into more advanced topics.
+
+# Section 13: Debugging Tests and Testing with dbt-expectations
+- Note that starting from dbt 1.10, when we pass arguments and configs to a test, we must do so under explicitly-written `arguments` and `config` properties, respectively.
