@@ -521,3 +521,10 @@
 - To allow us to use the above in dbt, there is https://github.com/metaplane/dbt-expectations.
     - Not actually a 1:1 port; just highly inspired.
 - Errors can and will happen. We want to make sure we're the first ones to catch them, and not the executive team or other teams. Otherwise, our credibility erodes.
+- See 'models/schema.yml' and 'models/sources.yml' for dbt-expectations tests we added to the `dim_listings_w_hosts` model and `listings` source, respectively.
+    - Note my comments on interesting regex behaviour when we nest multiple technologies.
+    - A source isn't a model; how can we selectively run tests for it? By running `dbt test -s source:airbnb.listings` (no space before or after the colon).
+        - Note the `expect_table_row_count_to_equal_other_table` test we added to the `dim_listings_w_hosts` model is run too, because the test links the model and the source.
+- How to debug a test?
+    - We can run something like `dbt --debug test -s source:airbnb.listings`, but this prints all the SQL and gets overwhelming.
+    - A better way is to look in the 'target' folder for the specific compiled SQL, as we've done before.

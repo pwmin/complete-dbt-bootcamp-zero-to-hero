@@ -6,6 +6,24 @@ sources:
     tables:
       - name: listings
         identifier: raw_listings
+        columns:
+          - name: room_type
+            data_tests:
+              - dbt_expectations.expect_column_distinct_count_to_equal:
+                  arguments:
+                    value: 4
+          - name: price
+            data_tests:
+              - dbt_expectations.expect_column_values_to_match_regex:
+                  arguments:
+                    # `^` means the value must start with a certain value.
+                    # `$` is a special character in regex, so it must be escaped with `\`.
+                    # But this is YAML (which picks up `\` as a special character), so we must use `\\`.
+                    # Similar thing with other `\\`s.
+                    # And then Snowflake also needs doube escaping,
+                    # because it converts `\\` to `\` before passing to its regex engine.
+                    # The final `$` means this should be the end of the string.
+                    regex: "^\\\\$[0-9][0-9\\\\.]+$"
 
       - name: hosts
         identifier: raw_hosts
