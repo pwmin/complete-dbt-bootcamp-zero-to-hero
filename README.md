@@ -541,3 +541,18 @@
         - I.e., Jinja first, SQL second.
     - To properly comment something out in a macro, use Jinja syntax.
         - I.e., `{{ ... }}` -> `{# ... #}`.
+
+# Section 15: Debugging YAML, SQL, models and General dbt Bugs
+- Instructor's recommended order of commands for debugging (each should start with `dbt `):
+    - `--version`: Is it even installed and do you have the proper version?
+    - `debug`: Verify your connection to the warehouse.
+    - `clean`: Probably won't use that often. Deletes your 'target' folder which contains 'manifest.json', things about source freshness, and basically the internal state of dbt. In edge cases, it might be useful to just get rid of these so you can start dbt with a clean slate.
+    - `ls`: Which models, etc. (pretty much all the stuff) does dbt know about? Can also add `-s`.
+    - `deps`: Check package updates and installations.
+    - To speed up development, we probably don't want to run `run` or `build` all the time because it might be slow, so we can take this gradual step, going from shallowest to deepest:
+        - `parse`: Validates all the YAML but doesn't check SQLs.
+        - `compile`: In Core, renders Jinja to SQL, catching any Jinja syntax errors. In Fusion, also checks SQL syntax and uses its engine to understand what you want to do in your SQLs.
+        - `run`: Materializes models.
+        - `test`: Runs tests.
+        - `show`: What would a certain model produce?
+        - `build`: End-to-end (`seed` -> `run` -> `snapshot` -> `test`).
