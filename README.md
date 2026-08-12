@@ -528,3 +528,16 @@
 - How to debug a test?
     - We can run something like `dbt --debug test -s source:airbnb.listings`, but this prints all the SQL and gets overwhelming.
     - A better way is to look in the 'target' folder for the specific compiled SQL, as we've done before.
+
+# Section 14: Debugging with Logging
+- We can log messages to dbt's standard log file ('logs/dbt.log') or to the terminal.
+- We've made 'macros/logging.sql' containing an arbitrarily-named macro.
+    - And we can run it using `dbt run-operation learn_logging`.
+    - Note that similar to what we've seen before, the file name doesn't matter.
+- In `log()`, set `info=True` to print to the terminal.
+    - Similar to stepping up the log level from debug to info in Python.
+- As I've seen before, simply SQL-commenting out a line within a macro won't prevent it from being executed.
+    - Why? There are two layers of execution in dbt. When a macro gets executed, the Jinja part gets rendered and executed first, then the output of the Jinja will be the SQL, and then this SQL might be picked up by a model, etc.
+        - I.e., Jinja first, SQL second.
+    - To properly comment something out in a macro, use Jinja syntax.
+        - I.e., `{{ ... }}` -> `{# ... #}`.
