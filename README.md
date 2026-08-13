@@ -546,13 +546,24 @@
 - Instructor's recommended order of commands for debugging (each should start with `dbt `):
     - `--version`: Is it even installed and do you have the proper version?
     - `debug`: Verify your connection to the warehouse.
-    - `clean`: Probably won't use that often. Deletes your 'target' folder which contains 'manifest.json', things about source freshness, and basically the internal state of dbt. In edge cases, it might be useful to just get rid of these so you can start dbt with a clean slate.
+    - `clean`: Probably won't use that often. Deletes your 'target' folder which contains 'manifest.json', things about source freshness, and basically the internal state of dbt. In edge cases, it might be useful to just get rid of these so you can start dbt with a clean slate. Also deletes the 'dbt_packages' folder (as set by default in 'dbt_project.yml'), so `deps` will have to be rerun.
     - `ls`: Which models, etc. (pretty much all the stuff) does dbt know about? Can also add `-s`.
     - `deps`: Check package updates and installations.
     - To speed up development, we probably don't want to run `run` or `build` all the time because it might be slow, so we can take this gradual step, going from shallowest to deepest:
         - `parse`: Validates all the YAML but doesn't check SQLs.
+            - Creates 'target/manifest.json', which is what the instructor calls the most important file in the dbt state. It's enormous and contains all the metadata about the nodes.
         - `compile`: In Core, renders Jinja to SQL, catching any Jinja syntax errors. In Fusion, also checks SQL syntax and uses its engine to understand what you want to do in your SQLs.
         - `run`: Materializes models.
         - `test`: Runs tests.
-        - `show`: What would a certain model produce?
+        - `show`: What would a certain model produce? Can also add `-s` (e.g., `dbt show -s src_hosts`).
         - `build`: End-to-end (`seed` -> `run` -> `snapshot` -> `test`).
+- Two more techniques (both starting with `dbt run `):
+    - `--empty`: Sets `LIMIT 0` on all models, so materializes the whole pipeline with empty data.
+    - `--sample <time expression>`: Materializes the whole pipeline with a sample of the data based on a time range.
+        - E.g., we've added `event_time='created_at'` to the config of 'dim_listings_cleansed.sql'. When we run `dbt run -s dim_listings_w_hosts --sample "3 days"`, it'll append a `LIMIT` condition to the `dim_listings_cleansed` model reference within the compiled `dim_listings_w_hosts` query. Although, the result would actually be empty, because it would take only the last three days from today into account.
+    - I imagine these could be catastrophic in prod, lol.
+- We can also use flags.
+    - See https://docs.getdbt.com/reference/global-configs/about-global-configs
+    - E.g., can set fail-fast in various places to make dbt stop upon encountering the first error.
+    - But as dbt evolves, default behaviours can change. With the use of behaviour flags, we can mimic old behaviour even after upgrading our dbt version.
+    - See https://docs.getdbt.com/reference/global-configs/behavior-changes
