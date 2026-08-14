@@ -323,14 +323,14 @@
         - For passed tests, the corresponding tables are empty, as expected.
 
 # Section 8: Advanced Testing: Contracts and Custom Generic Tests
-- Contracts
+- Contracts?
     - We can hard-code the schema of a model in a YAML file.
     - Can catch very early if someone changes the schema of a model accidentally.
     - dbt has its own keywords for data types so it can stay warehouse-agnostic.
         - But we can also be much more specific to our warehouse of choice when defining data types.
     - Can also catch things like whether a not-nullability of a column has changed or not.
     - Another benefit: Teammates realize a model is contracted, so it's important to keep that specific schema and be careful if they want to change it.
-- Custom generic tests
+- Custom generic tests?
     - The canonical place to put these is in the 'generic' subfolder within the 'test' folder.
     - Older projects might contain these in the 'macros' folder instead.
     - We wrote a new generic test called 'positive_values.sql'. This and the singular test we wrote earlier, 'dim_listings_minimum_nights.sql', are redundant. The instructor says this is okay for now.
