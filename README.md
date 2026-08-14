@@ -600,3 +600,18 @@
         - The canonical file (as we've made) is 'selectors.yml'.
         - E.g., now we can run `dbt run --selector dim_except_listings_w_hosts`.
             - But starting from dbt 1.12, the proper syntax is `dbt run -s selector:dim_except_listings_w_hosts`.
+
+# Section 17: Python Models
+- Sometimes we need to write complex transformations in Python, for advanced use cases (e.g., machine learning).
+- dbt supports Python models, to be run on the target platform (not local machine) if supported (Databricks, Snowflake, BigQuery).
+- Limitations:
+    - Much slower because a small Python environment needs to be spun up, possibly with package installations if requested.
+    - Syntax is not platform-agnostic (e.g., when using Databricks-specific Python models, dbt will use Databrick's Spark DataFrame concept).
+- Syntax:
+    - Declare a function like so: `def model(dbt, session):`
+        - `dbt` brings all the standard dbt functionalities (refs, sources, variables, etc.).
+        - `session` brings the target-platform-specific functionalities (e.g., built-in functions).
+- Supports table and incremental materializations, but not view or ephemeral.
+- Custom SQL can be executed from within the function.
+- E.g., see 'dim_long_term_listings.py' and 'dim_fullmoon.py'.
+    - The latter failed before due to this error: snowflake.snowpark.exceptions.SnowparkFetchDataException: (1406): Failed to fetch a pandas Dataframe. The error is: 255002: Optional dependency: 'pandas' is not installed, please see the following link for install instructions: https://docs.snowflake.com/en/user-guide/python-connector-pandas.html#installation -- I used Copilot to remove the Pandas dependency.
