@@ -615,3 +615,28 @@
 - Custom SQL can be executed from within the function.
 - E.g., see 'dim_long_term_listings.py' and 'dim_fullmoon.py'.
     - The latter failed before due to this error: snowflake.snowpark.exceptions.SnowparkFetchDataException: (1406): Failed to fetch a pandas Dataframe. The error is: 255002: Optional dependency: 'pandas' is not installed, please see the following link for install instructions: https://docs.snowflake.com/en/user-guide/python-connector-pandas.html#installation -- I used Copilot to remove the Pandas dependency.
+
+# Section 18: Using Variables
+- There are two kinds of variables in dbt: Jinja ones, and dbt ones (aka "project variables").
+    - The latter is used more in day-to-day dbt work.
+- We've made `macros/variables.sql'.
+    - In Jinja, strings are concatenated using `~`.
+    - Try running `dbt run-operation learn_variables`.
+    - Project variables can be defined in various ways; see https://docs.getdbt.com/docs/build/project-variables
+    - In our case, we've defined `user_name` in 'dbt_project.yml', or we can run `dbt run-operation learn_variables --vars "{user_name: patrickmin}"`.
+    - Variable precedence behaviour:
+        1. What's entered on the command line.
+        2. What's entered in 'dbt_project.yml'.
+        3. What's entered as the fallback value in `var()`.
+- Going back to 'fct_reviews.sql'...
+    - We've done a standard naive implementation of an incremental model.
+    - If full refresh -> dbt won't set the `is_incremental` flag (I'm guessing the instructor means it won't be set to either true or false) -> dbt looks at the table -> if it doesn't exist yet, `is_incremental` is set to false; else true.
+    - And we've set a simple date-based condition to add rows that aren't in the table yet.
+    - In prod, this usually isn't enough.
+        - Often we want to backfill different date ranges because things go wrong and we want to reload them.
+        - It's standard practice to run incremental models with a parameterization of a date range to fill in and execute.
+    - We've added conditions to check for `start_date` and `end_date`
+        - Note the names are misleading; the values should actually be timestamps to match the `review_date` column type.
+        - Now try running `dbt run -s fct_reviews  --vars '{start_date: "2024-02-15 00:00:00", end_date: "2024-03-15 23:59:59"}'`.
+        - But this wouldn't overwrite existing data, potentially leading to duplicates. We'll need different incremental/merge strategies.
+        - See https://docs.getdbt.com/docs/build/incremental-models#about-incremental_strategy

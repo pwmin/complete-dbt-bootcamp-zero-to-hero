@@ -53,3 +53,6 @@ models:
 # data_tests:
   # +store_failures: true  # Can be used to output test results (both passed and failed) into the warehouse.
   # +schema: _test_failures  # Can be used to override the default test result schema.
+
+vars:
+  user_name: default_user_name_for_this_project
