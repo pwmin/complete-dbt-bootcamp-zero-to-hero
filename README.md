@@ -576,3 +576,27 @@
     - And specifically in 'mart_fullmoon_reviews.sql', we've added the same tag to the config, since it's built on `fct_reviews`.
     - Can check by running `dbt ls -s tag:fact`, which also brings up all the tests associated with these models.
         - And we could selectively run these by replacing `ls` with `run`.
+- Selectors?
+    - We've already seen `-s`, and there's much more.
+    - Graph operators: `+model`, `model+`, `@model`
+        - Selects a subgraph from DAG. We saw these in section 10.
+        - In our doc lineage graph, if we enter `@dim_listings_cleansed`, almost everything gets selected. Why? `@` is recursive and iterates over everything upstream and downstream. I.e., see everything connected -- very useful!
+        - We can also append a number to constrain how many steps we want taken (e.g., `1+dim_listings_w_hosts`).
+    - Methods: `tag:`, `source:`, `path:`
+        - Selects by type or other property (e.g., `path:models/dim`).
+    - State: `state:new, state:modified`
+        - Comparing my DAG to another DAG.
+        - We'll get back to this later when we dive deeper into prod topics.
+    - Result: `result:error`, `result:fail`
+        - Rerun only what failed (tests, models etc.).
+    - Set operators: `<s-a> <s-b>`, `<s-a>`, `<s-b>`
+        - Union or intersection of selectors.
+        - E.g., in our doc lineage graph, if we enter `tag:fact,+consistent_created_at`, only `fct_reviews` gets selected.
+    - Exclusion: `-exclude <s>`
+        - Exclude everything listed.
+    - Remember, the main use case for these isn't just selecting stuff in the doc lineage graph (which is nice to have), but actually building/testing subgraphs.
+    - These can all be combined into something called "YAML selectors".
+        - E.g., a project separated into three pieces (bronze, silver, gold) according to medallion architecture -- such a project benefits from selectors specifying which models adhere to which steps, so we can fine tune materializations.
+        - The canonical file (as we've made) is 'selectors.yml'.
+        - E.g., now we can run `dbt run --selector dim_except_listings_w_hosts`.
+            - But starting from dbt 1.12, the proper syntax is `dbt run -s selector:dim_except_listings_w_hosts`.
