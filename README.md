@@ -567,3 +567,12 @@
     - E.g., can set fail-fast in various places to make dbt stop upon encountering the first error.
     - But as dbt evolves, default behaviours can change. With the use of behaviour flags, we can mimic old behaviour even after upgrading our dbt version.
     - See https://docs.getdbt.com/reference/global-configs/behavior-changes
+
+# Section 16: Tags and Selectors
+- Tags?
+    - We might want to flag and group certain models based on their features (e.g., maybe some store sensitive data, or some need a certain materialization schedule). To do so, we can attach tags to them.
+    - As usual, we can do so on the project level (i.e., 'dbt_project.yml'), or on a YAML definition level (e.g., 'models/schema.yml'), or on an individual model level.
+    - We've set a 'fact' tag on `fct` models on the project level.
+    - And specifically in 'mart_fullmoon_reviews.sql', we've added the same tag to the config, since it's built on `fct_reviews`.
+    - Can check by running `dbt ls -s tag:fact`, which also brings up all the tests associated with these models.
+        - And we could selectively run these by replacing `ls` with `run`.
