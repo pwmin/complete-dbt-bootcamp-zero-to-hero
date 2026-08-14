@@ -360,13 +360,13 @@
             - `{# This is a comment #}`
             - Anything we put between comment text gets deleted and ignored when the template is rendered.
         - Statements
-            - `{% set my_name = "Zoltan" %}`
+            - `{% set my_name = "Patrick" %}`
             - Variable assignments, conditionals, loops, macros, etc.
         - Expressions
             - `{{ my_name }}`
             - We'll learn much more about variable handling in later sections.
-    - E.g., run `dbt compile --inline '{# This is a comment #}{% set my_name = "Zoltan" %}{{ my_name }}'` to see how it renders.
-        - It renders as `Zoltan`.
+    - E.g., run `dbt compile --inline '{# This is a comment #}{% set my_name = "Patrick" %}{{ my_name }}'` to see how it renders.
+        - It renders as `Patrick`.
 - Some built-in variables in dbt:
     - `{{ this }}` references the model being built.
     - `{{ target.name }}` references the name of our target, with the default defined in 'dbt_profiles.yml'.
