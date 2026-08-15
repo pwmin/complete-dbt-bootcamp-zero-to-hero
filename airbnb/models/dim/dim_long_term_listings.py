@@ -1,4 +1,6 @@
 def model(dbt, session):
+    dbt.config(enabled=False)
+
     # Snowflake DataFrame object.
     listings = dbt.ref("dim_listings_cleansed")
 

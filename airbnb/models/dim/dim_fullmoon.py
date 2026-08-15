@@ -3,7 +3,7 @@ from snowflake.snowpark.functions import col, lit
 
 
 def model(dbt, session):
-    dbt.config(materialized="table", packages=["holidays"])
+    dbt.config(materialized="table", packages=["holidays"], enabled=False)
 
     # Get the Snowpark DataFrame for the seed (no Pandas conversion).
     sf_df = dbt.ref("seed_full_moon_dates")

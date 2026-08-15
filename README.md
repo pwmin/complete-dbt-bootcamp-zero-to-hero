@@ -615,6 +615,7 @@
 - Custom SQL can be executed from within the function.
 - E.g., see 'dim_long_term_listings.py' and 'dim_fullmoon.py'.
     - The latter failed before due to this error: snowflake.snowpark.exceptions.SnowparkFetchDataException: (1406): Failed to fetch a pandas Dataframe. The error is: 255002: Optional dependency: 'pandas' is not installed, please see the following link for install instructions: https://docs.snowflake.com/en/user-guide/python-connector-pandas.html#installation -- I used Copilot to remove the Pandas dependency.
+    - These are slow and are just for demonstration purposes. Can I somehow disable them without deleting them? Yes! See section 20.
 
 # Section 18: Using Variables
 - There are two kinds of variables in dbt: Jinja ones, and dbt ones (aka "project variables").
@@ -654,3 +655,20 @@
 - The instructor recommends definitely using microbatching in prod for larger datasets.
 - There might be times when we want to exclude a model from full-refresh runs; we can do so in the config, as seen in `mart_fullmoon_reviews`.
     - We can still force a full-refresh by running something like this: `dbt run -s mart_fullmoon_reviews --full-refresh --event-time-start "2020-01-01" --event-time-end "2030-01-01"`.
+
+# Section 20: dbt in Production - Model Lifecycle - Versioning, Deprecating, Disabling Models
+- So far we've implemented initial versions of models (well, without really thinking about versioning).
+- But in the real world (as I've often seen with SQL file names containing suffixes like '_v2', ugh), we might want to make improvements and modifications, deprecate a model or version, or disable them.
+    - Oh, according to the instructor, such suffixes are canonical in dbt. :') 
+    - But the nice thing is that dbt automatically recognizes them when matching file names to version numbers.
+- Modifying in-place is risky as it may break whatever's downstream; instead, we can use model versions.
+    - We must be especially wary of sneaky changes that don't necessarily break the pipeline but change the semantics and what's expected by downstream users (e.g., changing a fallback name value from 'Anonymous' to 'N/A').
+    - We've made 'dim_hosts_cleansed_v2.sql' and fleshed out the `versions` property accordingly in 'schema.yml'.
+        - We can use the `deprecation_date` property to set such a warning, signalling to the team what to expect.
+        - Again, no need to explicitly set `defined_in` for `v: 2`; dbt automatically looks for the file name with the '_v2' suffix.
+        - Under `v: 2`'s `columns` property, we've defined which columns it inherits from v1, and which it doesn't.
+    - We can use the `latest_version` property to tell dbt which one to use (e.g., when we want to control when to release our change).
+    - And in `dim_listings_w_hosts`, we can pin the `dim_hosts_cleansed` version, to be explicit about it and not get a warning.
+    - Oh, the instructor adds that the way to completely make the transition from v1 to v2 in prod is to delete the v1 file, rename the v2 file (delete the suffix), delete the `versions` properties from 'schema.yml', and delete the pins everywhere (i.e., cleanup, which I enjoy).
+- Deprecating and disabling can be done via the `deprecated` and `enabled` properties.
+    - We've added `enabled=False` to the two slow Python models we made in section 17.
