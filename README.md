@@ -672,3 +672,16 @@
     - Oh, the instructor adds that the way to completely make the transition from v1 to v2 in prod is to delete the v1 file, rename the v2 file (delete the suffix), delete the `versions` properties from 'schema.yml', and delete the pins everywhere (i.e., cleanup, which I enjoy).
 - Deprecating and disabling can be done via the `deprecated` and `enabled` properties.
     - We've added `enabled=False` to the two slow Python models we made in section 17.
+
+# Section 21: dbt in Production - Preparing a Project for Slim CI
+- Learning objectives:
+    - Work with different target warehouses and schemas (e.g., testing, staging, prod, dev, best practices for schema naming).
+    - Use environment variables.
+    - Work with states (new, modified, failed) and compare prod and dev pipeline states.
+    - `--defer` (retry runs) and `--clone` (make dev changes by pointing back to already materialized tables in prod).
+    - Implement Slim CI through PRs.
+    - How a full integration pipeline in prod is put together.
+- Slim CI?
+    - Integration method coined by dbt which gives us guidelines on...
+        - How to test only what we've changed.
+        - And then integrate them into prod with tests and a full validation and deployment process.
