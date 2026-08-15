@@ -640,3 +640,17 @@
         - Now try running `dbt run -s fct_reviews  --vars '{start_date: "2024-02-15 00:00:00", end_date: "2024-03-15 23:59:59"}'`.
         - But this wouldn't overwrite existing data, potentially leading to duplicates. We'll need different incremental/merge strategies.
         - See https://docs.getdbt.com/docs/build/incremental-models#about-incremental_strategy
+
+# Section 19: dbt in Production - Microbatching Incremental Models
+- Looking at the `mart_fullmoon_reviews` model again, it depends on `fct_reviews`, which is an incremental table. Considering this, we'd benefit from converting the former from a standard materialization into an incremental one too.
+- But that would solve only part of the problem, because if we do a full refresh, then it might happen with a huge dataset that the temp tables of our warehouse are so big that if we work in a constrained environment, things could break or be super slow and memory intensive.
+- To mitigate this, dbt offers an incremental strategy called microbatching: if we want to do a full refresh, it won't just read the whole history of the table in one, but instead read it chunk by chunk (e.g., by year, month, date).
+- We need to specify three attributes:
+    1. `event_time`: Which column denotes the time event for the facts? In this case it's `review_date`.
+    2. `begin`: From which point do we want to do the microbatching? In this case it's the min value, which we've found to be '2009-06-20'.
+    3. `batch_size`: Can be anything from hours to years; we need to consider how quick we want this transformation to be. We could go by hour, but that would result in something like thousands of SQL updates in a full refresh, and we don't want that. This dataset is fairly small anyway.
+- Note there's a bug since dbt 1.9 that hasn't been resolved at the time of the video: If we work with microbatching in Snowflake, we need to go to 'profiles.yml' and increase `threads` (in our case, from 1 to 4); otherwise it might hang.
+- And then we ran `dbt run -s mart_fullmoon_reviews --full-refresh`, and 18 batches were done.
+- The instructor recommends definitely using microbatching in prod for larger datasets.
+- There might be times when we want to exclude a model from full-refresh runs; we can do so in the config, as seen in `mart_fullmoon_reviews`.
+    - We can still force a full-refresh by running something like this: `dbt run -s mart_fullmoon_reviews --full-refresh --event-time-start "2020-01-01" --event-time-end "2030-01-01"`.
