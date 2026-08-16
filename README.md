@@ -705,3 +705,19 @@
         2. `export DBT_ENV_NAME="MYDEV"`
         3. `dbt debug --profiles-dir _prod_profiles`
     - Production workflow: Develop in dev, test in staging, release to prod.
+- Custom schemas, and separating prod and dev environments:
+    - Two schema configs affect each model:
+        1. Target schema (i.e., takes a look at 'profiles.yml').
+        2. Model's schema (this is empty by default).
+    - By default, the above two get concatenated like so: `target.schema + _ + <custom schema name>`.
+    - We've added a custom schema name ('mart') to `mart_fullmoon_reviews`.
+    - Instructor's recommended best practice schema naming:
+        - `prod` + No custom schema name -> `PROD`
+        - `prod` + `mart` -> `MART` (not prefixed by `PROD_`; I don't like this very much as I can imagine the inconsistency causing confusion as the database scales)
+        - `staging` + No custom schema name -> `STAGING`
+        - `staging` + `mart` -> `STAGING_MART`
+        - `myfeature` + No custom schema name -> `DBT_MYFEATURE`
+        - `myfeature` + `mart` -> `DBT_MYFEATURE_MART`
+    - We can make use of the `generate_schema_name()` macro to override dbt's default logic; see 'macros/generate_schema_name.sql'.
+        - Interesting, I don't need to explicitly write it to "return" anything.
+        - And it seems it gets used automatically by dbt.
