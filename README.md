@@ -671,7 +671,7 @@
     - And in `dim_listings_w_hosts`, we can pin the `dim_hosts_cleansed` version, to be explicit about it and not get a warning.
     - Oh, the instructor adds that the way to completely make the transition from v1 to v2 in prod is to delete the v1 file, rename the v2 file (delete the suffix), delete the `versions` properties from 'schema.yml', and delete the pins everywhere (i.e., cleanup, which I enjoy).
 - Deprecating and disabling can be done via the `deprecated` and `enabled` properties.
-    - We've added `enabled=False` to the two slow Python models we made in section 17.
+    - I've added `enabled=False` to the two slow Python models we made in section 17.
 
 # Section 21: dbt in Production - Preparing a Project for Slim CI
 - Learning objectives:
