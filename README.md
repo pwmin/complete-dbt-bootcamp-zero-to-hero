@@ -685,3 +685,23 @@
     - Integration method coined by dbt which gives us guidelines on...
         - How to test only what we've changed.
         - And then integrate them into prod with tests and a full validation and deployment process.
+- Working with multiple targets:
+    - In 'profiles.yml', we've added a new output called `prod`.
+        - We've kept `user` the same as that of `dev`, although in the real world, we'd want a different one.
+        - For now, we've kept `target: dev`, and we can now run `dbt build --target prod`.
+        - This is a naive way of testing and developing in the dev schema, then pushing changes to the prod schema.
+    - The instructor's preferred way to separate and work with prod and dev data is to have them in the same database but in different schemas.
+        - Makes it easier to cross-reference things, build on existing tables, etc.
+- Using environment variables:
+    - We've made a new profiles file in a new folder: '_prod_profiles/profiles.yml'.
+        - Why? Because dbt doesn't support specifying different profiles files just by file name.
+        - We've replaced all the sensitive info with references to environment variables.
+        - Note the `dev` `schema` naming convention: prefixed with "DBT_".
+            - According to the instructor, it's best practice to do this for any schemas created via dbt.
+            - And we've used Jinja to make sure the whole string gets uppercased and trimmed.
+            - And now we can have multiple dev environments for multiple people.
+    - And we've added 'set-env.sh' at the same level as the 'airbnb' folder, and added it to '.gitignore' (since it contains sensitive info). Now we can run...
+        1. `. ../set-env.sh`
+        2. `export DBT_ENV_NAME="MYDEV"`
+        3. `dbt debug --profiles-dir _prod_profiles`
+    - Production workflow: Develop in dev, test in staging, release to prod.
