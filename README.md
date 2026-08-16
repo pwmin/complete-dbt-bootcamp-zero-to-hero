@@ -752,3 +752,9 @@
                     - I.e., "Hey dbt, if you can't find the required model(s), just look it/them up from the original schema specified by `--state`."
                     - E.g., `dbt run --profiles-dir _prod_profiles --target dev --state target-prod -s state:modified --defer`.
                     - Whoa, this is so much cleaner and more efficient!
+- Tips from Bitrise case study:
+    - Be vigilant about costs.
+        - Use incremental models as much as possible, and model your data so you can take advantage of them.
+        - Partitioning and clustering are important.
+    - Documenting and testing pays dividends later for new colleagues and AI agents.
+        - They made sure all their marts and reports were well-documented, and then their AI data analyst was able to get sophisticated column-level understanding about the available data so it could make better and quicker decisions.
