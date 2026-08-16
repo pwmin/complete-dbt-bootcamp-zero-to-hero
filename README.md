@@ -678,7 +678,7 @@
     - Work with different target warehouses and schemas (e.g., testing, staging, prod, dev, best practices for schema naming).
     - Use environment variables.
     - Work with states (new, modified, failed) and compare prod and dev pipeline states.
-    - `--defer` (retry runs) and `--clone` (make dev changes by pointing back to already materialized tables in prod).
+    - `retry` (retry runs), and `--clone` and `--defer` (make dev changes by pointing back to already materialized tables in prod).
     - Implement Slim CI through PRs.
     - How a full integration pipeline in prod is put together.
 - Slim CI?
@@ -703,7 +703,7 @@
     - And we've added 'set-env.sh' at the same level as the 'airbnb' folder, and added it to '.gitignore' (since it contains sensitive info). Now we can run...
         1. `. ../set-env.sh`
         2. `export DBT_ENV_NAME="MYDEV"`
-        3. `dbt debug --profiles-dir _prod_profiles`
+        3. `dbt debug --profiles-dir _prod_profiles` (or replace `debug` with `build`).
     - Production workflow: Develop in dev, test in staging, release to prod.
 - Custom schemas, and separating prod and dev environments:
     - Two schema configs affect each model:
@@ -721,3 +721,34 @@
     - We can make use of the `generate_schema_name()` macro to override dbt's default logic; see 'macros/generate_schema_name.sql'.
         - Interesting, I don't need to explicitly write it to "return" anything.
         - And it seems it gets used automatically by dbt.
+    - Written by instructor: 'macros/drop_dev_schemas.sql'
+        - We can now run `dbt run-operation drop_dev_schemas --profiles-dir _prod_profiles` to drop our dev schemas.
+- States?
+    - dbt stores state (model builds, source freshness, etc.) in JSON files in the 'target' folder by default (can be overridden using `--target-path`).
+        - This means it knows which steps succeeded and which steps failed, so we can retry failed executions using something like `dbt retry --profiles-dir _prod_profiles`.
+    - We can point dbt to another state folder using `--state`.
+    - Use cases:
+        1. Store prod state in a separate folder (can be done in cloud storage too).
+            - We've done this by running `dbt compile --profiles-dir _prod_profiles --target prod --target-path target-prod`.
+        2. Make our desired changes (to YAML, SQL, etc.)
+            - In 'dim_listings_w_hosts.sql', we've temporarily added an alias to the `price` column.
+        3. Point dbt to the prod state so it knows what has been changed, and rebuild only what's necessary.
+            - Now we can run `dbt ls --profiles-dir _prod_profiles --target dev --state target-prod -s state:modified` to see what has changed compared to what exists in the target state.
+                - Other `state` values to be aware of: `new` (new models only), `modified.body` (SQL body modified), `modified.config` (config modified), and more!
+            - Then we drop any dev schemas again as we did earlier, and replace `ls` with `run` and run it to try to execute the changed stuff.
+            - As we should've expected, we get an error because `dim_listings_w_hosts` depends on two models which don't exist in the newly created dev schema.
+            - This kind of thing had been a long-standing problem in dbt development with cumbersome solutions (yeah, I remember the struggles of copying prod to staging/ops-val).
+            - Two modern solutions and when to use them:
+                - `--clone`
+                    - We use a warehouse (e.g., Snowflake, Databricks) that supports cloning.
+                    - We want a cheap/shallow copy, meaning it doesn't copy the data.
+                    - Testing incremental models (`defer` would need `--full-refresh`).
+                    - For deployment: clone prod to staging, test, and deploy only if tests pass.
+                    - Seeding dev environments.
+              - `--defer`
+                    - Works across many more technologies.
+                    - We want the cheapest possible option in CI.
+                    - Doesn't materialize any models besides the ones modified in the dev schema (it uses the prod schema as a stand-in for missing models).
+                    - I.e., "Hey dbt, if you can't find the required model(s), just look it/them up from the original schema specified by `--state`."
+                    - E.g., `dbt run --profiles-dir _prod_profiles --target dev --state target-prod -s state:modified --defer`.
+                    - Whoa, this is so much cleaner and more efficient!
