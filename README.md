@@ -758,3 +758,32 @@
         - Partitioning and clustering are important.
     - Documenting and testing pays dividends later for new colleagues and AI agents.
         - They made sure all their marts and reports were well-documented, and then their AI data analyst was able to get sophisticated column-level understanding about the available data so it could make better and quicker decisions.
+
+# Section 22: Implementing an End-to-End Slim-CI-Based Production System
+- We've created '.github/workflows/' and added three new scripts.
+- 'prod-build.yml'
+    - Runs when there's a push on `main`, or we can run it manually.
+    - Has permissions for reading the repo and working with artifacts (which will be the prod target folder we want to upload, so we can compare feature branch changes to prod).
+    - Running on Linux (Ubuntu).
+    - Grabs secrets from environment variables.
+    - GitHub uses a bunch of built-in steps, so everything is pre-created for us.
+    - `actions/checkout@v6` will download our repo to this Ubuntu machine.
+    - `astral-sh/setup-uv@v7` will set up our UV (the virtual environment) using the same 'pyproject.toml' we used for setup much earlier in the course.
+    - Does more setup similar to what we did earlier.
+    - Goes to the 'airbnb' folder, executes the virtual environment, and runs dbt commands.
+    - Lastly, `actions/upload-artifact@v4` uploads the 'target' folder with 90 days of retention.
+        - In a real world scenario, we wouldn't have retention dates, and would store artifacts on a cloud storage like S3 instead.
+    - Looking at https://github.com/pwmin/complete-dbt-bootcamp-zero-to-hero/actions/runs/32074388708/job/95532555232, one inconsequential but interesting thing to note is the `***`, which happens because GitHub picks it up as a secret and hides it.
+    - Will run again after the PR below is merged, since it's pushing to `main`.
+- 'pr-slim-ci.yml'
+    - Run when there's a PR from any branch.
+    - Sets up things similarly to what the other scripts do.
+    - Takes the branch name (`github.head_ref`, which is a built-in GitHub variable), sanitizes it, and uses it to make a new schema name.
+    - Does a new dbt build, using the `dev` target, selecting only the modified stuff and any downstream dependencies, deferring to prod (as specified by `--state`) as needed, and comparing to the prod target that was uploaded as an artifact earlier.
+    - See https://github.com/pwmin/complete-dbt-bootcamp-zero-to-hero/pull/1
+- 'pr-cleanup.yml'
+    - Runs when a PR is closed because it has actually been merged to `main` (note the `github.event.pull_request.merged == true` line), and not when it's closed for other reasons.
+    - Sets up things similarly to what the other scripts do, including `dbt deps` just in case.
+    - Runs the `drop_dev_schemas` macro we saw in section 21.
+- Instructor: "Here is my honest opinion: If you understood the production lectures here, you know much, much better than 95% of the dbt practitioners out there." -- yay :D
+- So cool! I love this automation. I can finally make sense of the GitHub actions I saw and used in my previous role.
