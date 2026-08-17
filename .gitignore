@@ -1,4 +1,9 @@
 .DS_Store
-airbnb/profiles.yml
-set-env.sh
-airbnb/target-prod
+.user.yml
+.venv
+dbt_packages/
+logs/
+package-lock.yml
+profiles.yml
+set-env.*
+target*/
