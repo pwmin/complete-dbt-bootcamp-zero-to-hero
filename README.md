@@ -787,3 +787,16 @@
     - Runs the `drop_dev_schemas` macro we saw in section 21.
 - Instructor: "Here is my honest opinion: If you understood the production lectures here, you know much, much better than 95% of the dbt practitioners out there." -- yay :D
 - So cool! I love this automation. I can finally make sense of the GitHub actions I saw and used in my previous role.
+
+# Section 23: dbt Fusion and the Official Visual Studio Code Extension
+- In 2025, dbt Labs released an entirely new generation dbt engine: dbt Fusion.
+    - Completely rewritten from the ground up in Rust.
+        - The parsing engine is magnitudes faster -- whoa, seems way faster than Python.
+        - "Code comprehension engine" -- understands our code much better.
+    - Released under a source-available license.
+    - Released along with an official VS Code extension.
+- Learning objectives:
+    - Understand how the Parser and Compiler work.
+    - Feature matrix: dbt Fusion vs. dbt Core (we saw a tiny bit of this in sections 1 and 15).
+    - License differences from dbt Core.
+    - Hands-on.
