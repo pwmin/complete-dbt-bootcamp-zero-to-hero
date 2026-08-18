@@ -790,13 +790,33 @@
 
 # Section 23: dbt Fusion and the Official Visual Studio Code Extension
 - In 2025, dbt Labs released an entirely new generation dbt engine: dbt Fusion.
-    - Completely rewritten from the ground up in Rust.
-        - The parsing engine is magnitudes faster -- whoa, seems way faster than Python.
-        - "Code comprehension engine" -- understands our code much better.
-    - Released under a source-available license.
-    - Released along with an official VS Code extension.
-- Learning objectives:
-    - Understand how the Parser and Compiler work.
-    - Feature matrix: dbt Fusion vs. dbt Core (we saw a tiny bit of this in sections 1 and 15).
-    - License differences from dbt Core.
-    - Hands-on.
+- Fusion stands out the most in these two features:
+    - Parsing
+        - How does Jinja text (refs, sources, configs, anything in braces, etc.) get compiled into actual SQL?
+        - First, an analysis of all those things takes place (i.e., static analysis), and then Jinja translates this into and executes Python code (i.e., manifest generation).
+        - If we look in 'target/manifest.json', we can see the whole output of the parser.
+        - But going through these two steps can take a lot of time, scaling with project size.
+        - dbt Fusion, completely rewritten from the ground up in Rust, executes both steps in a single step, which is magnitudes faster.
+        - Whoa, I literally just saw this on LinkedIn: https://www.getdbt.com/blog/dbt-core-v1-12-is-ga
+            - "dbt Core v1.12 introduces the opt-in `--use-v2-parser` flag, which delegates that work to the new Rust parser built for v2 instead of the Python parser used by dbt Core v1.x. On larger projects, the Rust parser can be 5–10× faster."
+            - "The next major version of dbt Core is being rebuilt in Rust on the same foundations as the dbt Fusion engine. It raises the baseline for parser performance, language validation, artifacts, documentation, and adapter development. Trying the parser in v1.12 gives you an early look at one of the most foundational parts of that new architecture without requiring you to move your whole project to dbt Core v2.0 today."
+    - SQL comprehension
+        - Layers of warehouse processing to go through before SQL is executed:
+            1. Parser: Syntax only. The warehouse parses the code for syntax errors so it can catch typos in keywords and have a general understanding of what the SQL is about.
+            2. Compiler: Level 1 + function names, argument count, and data types. Resolves the different expressions and maps them to data types and actual columns in the warehouse.
+            3. Executor: Level 2 + the data itself. Now the query can be optimized, planned, and executed.
+        - Core lets the warehouse compile the SQL, whereas Fusion has a built-in parser and compiler ("code comprehension engine"), and compiles and comprehends the SQL as much as possible locally without touching the warehouse.
+- Generally, if we use a popular cloud warehouse tech (e.g., BigQuery, Databricks, Redshift, Snowflake) and our code doesn't rely on logging output or has highly customized logic, we should be able to migrate without issues from Core to Fusion, at least at the time of recording of the lecture video.
+    - Custom materializations are limited.
+    - Fusion's log output differs a lot from that of Core, although the dbt Labs team is working on improving it.
+- Licensing:
+    - Core is under Apache 2 license.
+        - Apparently this can backfire.
+        - E.g., Elasticsearch and MongoDB; cloud providers started offering these techs as paid services.
+    - Fusion is under mostly Elastic License v2 (ELv2).
+        - It's "source-available".
+        - We can use it for free, but we can't provide it as a service for free.
+            - Means if we have a project that uses dbt Fusion in our pipeline, we can use it in our company without restrictions just like Core.
+            - But if we decide to sell the dbt Fusion technology (?), we need to compensate dbt Labs for it.
+        - Might include proprietary licensed enterprise features later.
+        - For us as students, this probably won't make a diff.
