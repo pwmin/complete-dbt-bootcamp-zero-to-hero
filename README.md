@@ -820,3 +820,18 @@
             - But if we decide to sell the dbt Fusion technology (?), we need to compensate dbt Labs for it.
         - Might include proprietary licensed enterprise features later.
         - For us as students, this probably won't make a diff.
+- Hands-on:
+    - We've installed the official dbt VS Code extension, which:
+        - Installed dbt Fusion.
+        - Upgraded our project to be 100% Fusion-compatible.
+            - With the introduction of Fusion and dbt 1.10, YAML schema-checking became stricter.
+            - If our code was based on older versions of Core, some changes might need to be made. The installation does this for us automatically, but we can do this manually too; see https://github.com/dbt-labs/dbt-autofix
+        - Compiled our project for Fusion's SQL comprehension.
+    - The installation checked 'profiles.yml' by default, instead of the '_prod_profiles' we set up in section 21. And because I dropped my `dev` schema while working on that section (I thought it was obsolete...), I had to tweak my 'profiles.yml' a bit by commenting out the `dev` stuff and changing the `target` to `prod`.
+    - Because we had our venv activated already, dbt Fusion was installed into it and updated the path, taking over precedence (i.e., `dbtf` commands have taken over `dbt` commands as an alias).
+        - The instructor showed a way to fix this by deactivating and reactivating the venv, but it doesn't seem to work for me. I might have to re-run `uv sync`; I'll leave it be for now, since the commands seem to be compatible.
+    - The instructor simply ran `dbtf build` which seemed to disregard all the prod stuff we set up in section 21. I instead ran `dbt build --profiles-dir _prod_profiles --target prod --target-path target-prod`.
+        - I might consider changing `target` to `prod` in '_prod_profiles' in the future.
+    - Cool, there are many new UI and quality-of-life features now.
+    - "A compiler's job isn't really the compilation, but to give you meaningful error messages."
+    - `dbt system` offers commands for updating dbt, uninstalling dbt, and installing drivers.

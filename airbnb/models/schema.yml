@@ -6,7 +6,8 @@ models:
       - minimum_row_count:
           arguments:
             min_row_count: 1000
-          severity: error
+          config:
+            severity: error
 
     columns:
       - name: listing_id
