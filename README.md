@@ -867,3 +867,39 @@
             - Very good, but again, not great when it comes to dbt integration.
         - dbt Cloud
             - Can create jobs to run on a schedule (supports cron); I remember trying this when I took the dbt Fundamentals course in March 2025.
+- Dagster hands-on:
+    - `dagster-dbt project scaffold --project-name my_dbt_dagster_project --dbt-project-dir airbnb`
+        - `scaffold` takes two params: `--project-name` and `--dbt-project-dir`.
+        - This created several new files.
+            - We'd use the new 'pyproject.toml' and 'setup.py' if we wanted to release our Dagster project as a Python package.
+            - 'schedules.py'
+                - We've uncommented the schedule-related lines.
+            - 'assets.py':
+                - Basically the core of Dagster, where we can define what we're building (i.e., creating an asset that Dagster can materialize).
+                - Super simple, because Dagster dbt takes care of the heavy lifting.
+                - This definition will create a DAG of our dbt resources, and we say we want to execute a build on that.
+            - 'project.py'
+                - Defines how to execute dbt.
+                - Contains relative (not absolute) paths of where the dbt project is and where dbt will copy our project files when the assets are built.
+            - 'definitions.py'
+                - Where everything above is glued together.
+    - And while in the 'my_dbt_dagster_project' parent (not child) folder, we ran `dagster dev` to start a Dagster development server.
+        - If we want to put Dagster to production, there are different components that need to play together.
+        - But `dagster dev` just packs all the components into a single process, so it's easy to use.
+            - The instructor confesses he uses this in prod too because it's just so simple and works well.
+    - Looking at the UI:
+        - Slightly different from the recording, but all the same ideas seem to be here.
+        - "Automation" is where we work with schedules. By default, everything is disabled.
+            - We can schedule various subgraphs of models if we want.
+        - Wow "Catalog" and "Lineage" are very thorough; on par if not better than dbt docs.
+        - In "Lineage", we've clicked "Materialize all" which is like running `dbt run`.
+            - And the corresponding run is listed on the "Runs" page.
+            - We can also materialize specific models.
+            - The selectors are very similar to what we've seen in previous sections.
+        - Shows informative model-level metrics, including execution durations across multiple runs.
+- Some more Dagster glazing from the instructor:
+    - In the past, he was able to integrate both a dbt project and a data integration (not transformation) layer (Airbyte) into Dagster with minimal configuration.
+        - Dagster was able to orchestrate them both as if they were a single software; full lineage from the source database to the end of the pipeline.
+        - It worked across technologies.
+    - Could also do something like have a Python-based data source that extracts some data from an API, connect and load it into the warehouse, and use dbt on top.
+    - Can have a very nice overview of the whole pipeline and manage it without ever touching dbt in prod directly, because Dagster can take care of various tiny tasks you have to do.
