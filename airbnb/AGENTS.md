@@ -68,5 +68,3 @@ https://docs.getdbt.com/reference/deprecations#list-of-deprecation-warnings
 https://github.com/dbt-labs/dbt-fusion/discussions/401
 https://docs.getdbt.com/docs/fusion/supported-features
 https://docs.getdbt.com/docs/fusion/new-concepts
-
-
