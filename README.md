@@ -835,3 +835,35 @@
     - Cool, there are many new UI and quality-of-life features now.
     - "A compiler's job isn't really the compilation, but to give you meaningful error messages."
     - `dbt system` offers commands for updating dbt, uninstalling dbt, and installing drivers.
+
+# Section 24: Orchestrating dbt with Dagster
+- In most cases when putting a dbt project into production, we need to decide how to orchestrate it (i.e., which tool?).
+- Tool examples:
+    - Open source:
+        - Apache Airflow
+            - The biggest and most popular one; great if we want to learn from others' experiences.
+            - Instructor would personally go with another tool because the installation is a little cumbersome.
+            - Apparently it doesn't really integrate with dbt (e.g., won't be able to explore what models succeeded/failed after a nightly run).
+            - It manages your whole dbt project as a unit, not as a set of models, tests, macros, snapshots, etc. -- a "traditional" approach.
+        - Prefect
+            - Much more modern.
+            - Very Pythonic; great if you're a data engineer.
+            - Quite simple when it comes to dbt integration.
+            - Has guidelines on setting up an environment if you want to integrate with dbt Cloud, which is easy especially when using Prefect Cloud (proprietary).
+            - But if we want to stay free and open source, we'd want to integrate with dbt Core.
+                - But not full-fledged. Has some features like letting you look at how long certain models took to materialize, but not much.
+            - Instructor does recommend Prefect over Airflow.
+        - Dagster
+            - Our tool of choice for this course.
+            - On par with Prefect in that it's a new generation tool.
+            - Has data concepts and constructs very similar to those of dbt.
+                - dbt has models, whereas Dagster has "assets".
+            - Great UI and tight dbt integration; understands your project.
+            - Easy to debug; shows the exact commands executed and what went wrong if things go wrong.
+            - We actually installed this way back when setting things up for this course using `uv sync`; see 'pyproject.toml'.
+    - Proprietary:
+        - Azure Data Factory
+            - Point-and-click (code-free) ETL orchestration tool.
+            - Very good, but again, not great when it comes to dbt integration.
+        - dbt Cloud
+            - Can create jobs to run on a schedule (supports cron); I remember trying this when I took the dbt Fundamentals course in March 2025.
