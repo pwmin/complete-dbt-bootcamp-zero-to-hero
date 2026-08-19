@@ -745,7 +745,7 @@
                     - Testing incremental models (`defer` would need `--full-refresh`).
                     - For deployment: clone prod to staging, test, and deploy only if tests pass.
                     - Seeding dev environments.
-              - `--defer`
+                - `--defer`
                     - Works across many more technologies.
                     - We want the cheapest possible option in CI.
                     - Doesn't materialize any models besides the ones modified in the dev schema (it uses the prod schema as a stand-in for missing models).
