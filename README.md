@@ -640,7 +640,9 @@
         - Note the names are misleading; the values should actually be timestamps to match the `review_date` column type.
         - Now try running `dbt run -s fct_reviews  --vars '{start_date: "2024-02-15 00:00:00", end_date: "2024-03-15 23:59:59"}'`.
         - But this wouldn't overwrite existing data, potentially leading to duplicates. We'll need different incremental/merge strategies.
-        - See https://docs.getdbt.com/docs/build/incremental-models#about-incremental_strategy
+            - Oh wait, Snowflake's default incremental strategy is merge, so we should be okay. Still, being explicit about it in the model config would be good.
+                - Oh wait x2, merge depends on us specifying a `unique_key`; otherwise, the behaviour falls back to append :(
+        - See https://docs.getdbt.com/docs/build/incremental-models#about-incremental_strategy=
 
 # Section 19: dbt in Production - Microbatching Incremental Models
 - Looking at the `mart_fullmoon_reviews` model again, it depends on `fct_reviews`, which is an incremental table. Considering this, we'd benefit from converting the former from a standard materialization into an incremental one too.
