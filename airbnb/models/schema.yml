@@ -21,13 +21,7 @@ models:
         data_tests:
           - accepted_values:
               arguments:
-                values: [
-                  'Entire home/apt',
-                  'Private room',
-                  'Shared room',
-                  'Hotel room',
-                  # 'Hotel room - break this'
-                ]
+                values: [ 'Entire home/apt', 'Private room', 'Shared room', 'Hotel room' ] # 'Hotel room - break this'
 
       - name: minimum_nights
         description: '{{ doc("dim_listing_cleansed__minimum_nights") }}'
@@ -51,7 +45,7 @@ models:
       - v: 2
         columns:
           - include: '*'
-            exclude: [host_name]
+            exclude: [ host_name ]
           - name: host_name
             description: The name of the host (N/A if not available)
             data_type: string
@@ -62,8 +56,8 @@ models:
     description: Cleansed table for the Airbnb hosts.
 
     config:
-        contract:
-          enforced: true
+      contract:
+        enforced: true
 
     columns:
       - name: host_id
@@ -82,11 +76,11 @@ models:
 
       - name: is_superhost
         description: Defines whether the host is a superhost.
-        data_type: string  # Intentionally not a Boolean.
+        data_type: string # Intentionally not a Boolean.
         data_tests:
           - accepted_values:
               arguments:
-                values: ['t', 'f']
+                values: [ 't', 'f' ]
 
       - name: created_at
         data_type: timestamp
@@ -108,7 +102,7 @@ models:
           - dbt_expectations.expect_column_quantile_values_to_be_between:
               arguments:
                 # I.e., we want 99% of the values to be between 50 and 500.
-                quantile: .99
+                quantile: 0.99
                 min_value: 50
                 max_value: 500
           - dbt_expectations.expect_column_max_to_be_between:
@@ -134,4 +128,76 @@ models:
         data_tests:
           - accepted_values:
               arguments:
-                values: ['positive', 'neutral', 'negative']
+                values: [ 'positive', 'neutral', 'negative' ]
+
+  - name: int_host_performance
+    description: An intermediate model that tracks the performance of Airbnb hosts. The metrics cover total listings, price information, Airbnb types, length of Airbnb profile, and portfolio size for each host.
+    columns:
+      - name: host_id
+        description: The primary key for an Airbnb host.
+        data_type: number
+        data_tests:
+          - not_null
+          - unique
+      - name: host_name
+        description: The name of the host.
+        data_type: varchar
+      - name: total_listings
+        data_type: number
+      - name: avg_listing_price
+        data_type: number
+      - name: min_listing_price
+        data_type: number
+      - name: max_listing_price
+        data_type: number
+      - name: entire_home_count
+        data_type: number
+      - name: private_room_count
+        data_type: number
+      - name: shared_room_count
+        data_type: number
+      - name: hotel_room_count
+        data_type: number
+      - name: avg_minimum_nights
+        data_type: number
+      - name: portfolio_size
+        data_type: varchar
+      - name: host_status
+        data_type: varchar
+      - name: host_tenure
+        data_type: varchar
+      - name: dominant_room_type
+        data_type: varchar
+
+  - name: mart_listing_performance
+    columns:
+      - name: listing_id
+        data_type: number
+      - name: listing_name
+        data_type: varchar
+      - name: room_type
+        data_type: varchar
+      - name: price
+        data_type: number
+      - name: minimum_nights
+        data_type: number
+      - name: host_id
+        data_type: number
+      - name: host_name
+        data_type: varchar
+      - name: host_is_superhost
+        data_type: varchar
+      - name: total_listings
+        data_type: number
+      - name: host_portfolio_avg_price
+        data_type: number
+      - name: portfolio_size
+        data_type: varchar
+      - name: host_status
+        data_type: varchar
+      - name: host_tenure
+        data_type: varchar
+      - name: price_position_vs_portfolio
+        data_type: varchar
+      - name: price_segment
+        data_type: varchar

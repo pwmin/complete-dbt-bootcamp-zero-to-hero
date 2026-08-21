@@ -49,6 +49,8 @@ models:
       +materialized: ephemeral
     fct:
       +tags: ['fact']
+    mart:
+      +materialized: table
 
 # data_tests:
   # +store_failures: true  # Can be used to output test results (both passed and failed) into the warehouse.

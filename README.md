@@ -832,11 +832,12 @@
     - The installation checked 'profiles.yml' by default, instead of the '_prod_profiles' we set up in section 21. And because I dropped my `dev` schema while working on that section (I thought it was obsolete...), I had to tweak my 'profiles.yml' a bit by commenting out the `dev` stuff and changing the `target` to `prod`.
     - Because we had our venv activated already, dbt Fusion was installed into it and updated the path, taking over precedence (i.e., `dbtf` commands have taken over `dbt` commands as an alias).
         - The instructor showed a way to fix this by deactivating and reactivating the venv, but it doesn't seem to work for me. I might have to re-run `uv sync`; I'll leave it be for now, since the commands seem to be compatible.
-    - The instructor simply ran `dbtf build` which seemed to disregard all the prod stuff we set up in section 21. I instead ran `dbt build --profiles-dir _prod_profiles --target prod --target-path target-prod`.
+        - Ah, this was happening because I copied and pasted the '.venv' folder from an old root folder, and the path(s) within was/were stale. No wonder I was getting warnings/recommendations to use `uv sync --active`. I fixed it by deleting the folder and rerunning `uv sync`.
+    - The instructor simply ran `dbtf build` which seemed to disregard all the prod stuff we set up in section 21. I instead ran `dbtf build --profiles-dir _prod_profiles --target prod --target-path target-prod`.
         - I might consider changing `target` to `prod` in '_prod_profiles' in the future.
     - Cool, there are many new UI and quality-of-life features now.
     - "A compiler's job isn't really the compilation, but to give you meaningful error messages."
-    - `dbt system` offers commands for updating dbt, uninstalling dbt, and installing drivers.
+    - `dbtf system` offers commands for updating dbt, uninstalling dbt, and installing drivers.
 
 # Section 24: Orchestrating dbt with Dagster
 - In most cases when putting a dbt project into production, we need to decide how to orchestrate it (i.e., which tool?).
@@ -905,3 +906,47 @@
         - It worked across technologies.
     - Could also do something like have a Python-based data source that extracts some data from an API, connect and load it into the warehouse, and use dbt on top.
     - Can have a very nice overview of the whole pipeline and manage it without ever touching dbt in prod directly, because Dagster can take care of various tiny tasks you have to do.
+
+# Section 26: An Alternative VS Code Extension - Power User for dbt Core
+- Scenario:
+    - We'll build two new models:
+        - An intermediate one that aggregates host performance metrics.
+        - A mart listing performance with comprehensive analytics.
+    - We've been given two legacy SQLs to start with.
+    - We'll use AI to build two prod-ready models, full docs, and tests.
+- It's the biggest and we can use (parts of?) it for free! But the more advanced features require signing up (and the trial requires a business email address) to Altimate AI for an API key and instance name, so I won't be able to follow along during some of this section's parts. I'll use Copilot instead where possible.
+- I've installed the extension.
+    - Seems to be compatible with the official dbt extension I've already installed, although now there are two Lineage tabs, one from each extension.
+    - And it also installed the Datamates extension.
+    - Haha, the Documentation Editor offers a "Make it fun" tone for AI-generated docs, although I need to make an account for it.
+    - Power User's Project Healthcheck feature is useful for checking for things we missed.
+- Prompt:
+```md
+Create an intermediate model called int_host_performance that calculates host-level performance metrics.
+
+Use the following upstream models:
+dim_hosts_cleansed for host data
+dim_listings_cleansed for listing data
+
+Calculate these metrics per host:
+- total_listings: count of listings
+- avg_listing_price: average price across listings
+- min_listing_price: minimum price
+- max_listing_price: maximum price
+- room type distribution (entire_home_count, private_room_count, shared_room_count, hotel_room_count)
+- avg_minimum_nights: average minimum night
+
+Add these classifications:
+- portfolio_size: based on listing count (inactive = 0, single_listing = 1, small_portfolio = 2-5, medium_portfolio = 6-15, large_portfolio = 16+)
+- host_status: 'superhost' if is_superhost = 't', else 'standard'
+- host_tenure: based on created_at (new_host <1 year, experienced_host 1-3 years, veteran_host 3+ years)
+- dominant_room_type: the room type with most listing
+
+save to models/intermediate/int_host_performance.sql
+```
+- Overall workflow:
+    - Use lineage to understand dependencies before writing code.
+        - Column-level lineage lets you trace transformations across models.
+    - Autocomplete to reference models and columns error-free.
+    - Compile and run to validate without leaving VS Code.
+    - Use AI to generate docs (model and column descriptions) and tests (test-driven development!) as you go, catching issues before they hit prod.
