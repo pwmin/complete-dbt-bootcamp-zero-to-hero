@@ -907,6 +907,9 @@
     - Could also do something like have a Python-based data source that extracts some data from an API, connect and load it into the warehouse, and use dbt on top.
     - Can have a very nice overview of the whole pipeline and manage it without ever touching dbt in prod directly, because Dagster can take care of various tiny tasks you have to do.
 
+# Section 25: Capstone Project
+- No notes.
+
 # Section 26: An Alternative VS Code Extension - Power User for dbt Core
 - Scenario:
     - We'll build two new models:
@@ -950,3 +953,9 @@ save to models/intermediate/int_host_performance.sql
     - Autocomplete to reference models and columns error-free.
     - Compile and run to validate without leaving VS Code.
     - Use AI to generate docs (model and column descriptions) and tests (test-driven development!) as you go, catching issues before they hit prod.
+
+# Section 27: Best Practices for Introducing and Using dbt in Your Company
+- No notes.
+
+# Section 28: dbt Certification Exam Preparation Guide
+- No notes.
