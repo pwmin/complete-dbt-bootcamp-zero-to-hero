@@ -959,3 +959,15 @@ save to models/intermediate/int_host_performance.sql
 
 # Section 28: dbt Certification Exam Preparation Guide
 - No notes.
+
+# Section 29: REFERENCE - Theory 1 - The Data Maturity Model
+- 
+
+# Section 30: REFERENCE - Theory 2 - Data Warehouses, Data Lakes and Lakehouses
+- 
+
+# Section 31: REFERENCE - Theory 3 - The Modern Data Stack
+- 
+
+# Section 32: REFERENCE - Theory 4 - Slowly Changing Dimension (SCD)
+- 
