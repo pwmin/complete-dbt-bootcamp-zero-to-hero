@@ -1040,7 +1040,45 @@ save to models/intermediate/int_host_performance.sql
     - Governance: Can control and authorize access to data, and use an interface to connect to BI tools.
 
 # Section 31: REFERENCE - Theory 3 - The Modern Data Stack
-- 
+- Storage and transistor prices dropped over the decades, and internet connection speeds increased; thus engineers rethought existing processes.
+- Data warehouses old and modern:
+    - Old: Symmetric multiprocessing (SMP):
+        - Many processors share resources linked via a shared bus.
+        - Storage and compute are tightly coupled, so benefit: shorter processing times.
+        - Can only be scaled vertically; can add more disks (CPU) to a computer, but limited by how many can fit in one machine.
+        - Can't keep backups; no distributed routing technologies.
+    - Modern: Multi-parallel processing (MPP):
+        - Offered by cloud services.
+        - Made of a master node and multiple compute nodes, each equipped with own OS and memory (i.e., not shared).
+        - Master node coordinates operations among compute nodes using high-speed messaging interface.
+        - Storage can be shared or not (optional), so the architecture is called either "shared storage" or "shared nothing".
+        - The latter is the most common MPP design.
+        - Depending on the distribution mechanism employed, data from one table might span many nodes, with each processing only the rows on its disks.
+        - Can do horizontal scaling: add more nodes.
+        - We connect to the master node as a user or app via JDBC/ODBC.
+- Decoupling of compute and storage.
+    - Computing is required only when a request is made by the business or analytical applications, so compute nodes can be shut down when not needed.
+    - Storage can acquire data continuously without involving compute, and data is safe inside low-cost storage.
+    - Can scale compute very dynamically.
+- Rise of column-oriented databases.
+    - Row-oriented databases arranged data by record (i.e., stored all data associated with each record in memory).
+        - Conventional, and continue to offer some important advantages for storing data quickly.
+        - Designed to be efficient when writing or reading.
+        - Still want to use these in online transactional processing (OLTP) databases like Postgres or MySQL.
+        - Not great for analytical workloads.
+    - Column-oriented databases were designed and introduced.
+        - Arrange data by field, storing all the data associated with a field in memory.
+        - Increased in popularity because they improve query performance.
+        - Optimized for efficient column reading and computation.
+        - Require fewer I/O operations.
+        - Better for online analytical processing (OLAP) applications.
+        - MPP databases today are all columnar.
+    - E.g., if we had a sales table and wanted to sum up sales (one column), the former would require loading the whole table, whereas the latter would require just loading the sales column.
+- Modern data stack is more horizontally than vertically integrated, with tools and DevOps for each layer.
+    - Flattened out, cheap, easy to use.
+    - Data source -> Extract and load -> Data warehouse feeding transform and data science back and forth -> BI tools OR reverse ETL feeding destination.
+        - Neat, I didn't know the term "reverse ETL" -- I wrote a lot of this.
+    - Old stuff was vertically integrated, all-in-one, massive, and complicated.
 
 # Section 32: REFERENCE - Theory 4 - Slowly Changing Dimension (SCD)
 - 
