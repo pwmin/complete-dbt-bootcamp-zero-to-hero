@@ -1081,4 +1081,29 @@ save to models/intermediate/int_host_performance.sql
     - Old stuff was vertically integrated, all-in-one, massive, and complicated.
 
 # Section 32: REFERENCE - Theory 4 - Slowly Changing Dimension (SCD)
-- 
+- Data that change rarely and unpredictably, requiring a specific approach to handle referential integrity.
+- When data is changed in the source database, how that is reflected in the corresponding warehouse table decides what data is maintained for further accessibility by the business.
+- Depending on the business case, storing historical data may or may not be worthwhile.
+- Type 0: Retain original.
+    - Even if a dim changes in the source table, don't bother updating the warehouse table.
+    - We want to do this when the data isn't worth maintaining.
+    - E.g., an Airbnb host might change their fax number, which doesn't matter because faxing is obsolete.
+- Type 1: Overwrite.
+    - When a dim changes in the source table, overwrite the corresponding data in the warehouse table.
+    - We want to do this when there's no point in maintaining historical data, as it becomes obsolete and only the new data matters.
+    - E.g., an Airbnb gets air conditioning installed and the listing is updated accordingly.
+- Type 2: Add new row.
+    - We saw this in section 6.
+    - Keep full history; add a row for each dim change.
+    - Start and end date columns are added.
+    - All historical data is maintained and easily accessible, but of course, storage increases.
+    - Might not be viable if processing speeds become unreasonably high.
+    - E.g., Airbnb listing price changes, which are valuable data for analyses.
+- Type 3: Add new attribute.
+    - Keep limited history; add a separate column for the dim change.
+    - Can be sufficient and beneficial if processing speed is a concern.
+    - Trade-off between not maintaining all historical data, for the sake of having fewer rows and less storage.
+    - Will not maintain values other than the original (previous) and current values.
+        - Hmm, I wonder if just constantly adding more columns (which would be ugly) would still count as type 3.
+    - If a dim changes more than once, only the previous and current values would be recoverable from the warehouse.
+    - E.g., an Airbnb listing type changes from 'private' to 'entire' to 'shared', and analyses care only about the type that came right before the current one, so the warehouse just stores 'entire' and 'shared'.
