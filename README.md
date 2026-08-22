@@ -997,7 +997,47 @@ save to models/intermediate/int_host_performance.sql
         - Tools like Fivetran and Stitch let us connect to source systems and load data into our destination with just a few clicks.
 
 # Section 30: REFERENCE - Theory 2 - Data Warehouses, Data Lakes and Lakehouses
-- 
+- Warehouse:
+    - Serves as the tech for analytics and reporting.
+    - Just a database that lets us do high performance, optimized analytics on data; create dims and facts; and handle denormalization.
+    - Works well with columnar storage formats and complex data types, but can't handle unstructured data like images or videos.
+    - Usually we interact with it by executing SQL against it.
+    - Often used for reporting or dashboarding, so very important to keep the data well-structured and clean.
+    - Were typically on-premise, provided by vendors like IBM, Oracle, and Teradata.
+        - Complete control over setup: both hardware and software.
+        - Useful when there are strict regulatory compliance policies.
+        - Huge cost of ownership.
+        - Need sysadmins and network engineers.
+        - Hard to scale.
+    - Then cloud computing (e.g., Amazon Redshift, Google BigQuery, Snowflake) became available.
+        - Very easy to maintain and scale.
+        - Can get a leader node, for which we can add/remove compute nodes as we wish.
+    - Issues:
+        - We pay for compute nodes whether they're used or not.
+        - Can set up autoscaling, but doesn't necessarily mean we can scale to meet peak workloads.
+    - Workaround:
+        - External tables; store large files outside the warehouse, like in S3 or blob storages, to decouple the compute and storage components.
+        - Can scale compute and storage independently from the warehouse instances.
+        - No practical difference in querying when implementing this.
+        - External tables are stored on serverless service, whose infrastructure is fully managed by the cloud provider.
+- Lake:
+    - Like a repository where we can put all kinds of data (raw, clean, unstructured, semi-structured, structured, etc.).
+    - Very scalable file system.
+    - On-premise: Hadoop Distributed File System (HDFS).
+    - Cloud: S3, Azure, etc.
+    - The purpose is just to store files, so there's no integrated compute.
+    - If our analytical workloads increase, we can scale our compute instances independently from storage.
+    - Databricks and Snowflake store data in lake by default, and provide analytical clusters that we can set up how we want.
+- Lakehouse:
+    - Emerged due to limitation of lake.
+    - Combines best features of lake and warehouse.
+    - Very similar data structure and management features as those of warehouse.
+    - Sits on top of local cloud storage.
+    - Cost-efficient storage.
+    - ACID transactional support.
+    - Data schema stored in lakehouse metastore.
+    - Can evolve table schema without having to make a copy.
+    - Governance: Can control and authorize access to data, and use an interface to connect to BI tools.
 
 # Section 31: REFERENCE - Theory 3 - The Modern Data Stack
 - 
