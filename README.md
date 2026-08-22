@@ -961,7 +961,40 @@ save to models/intermediate/int_host_performance.sql
 - No notes.
 
 # Section 29: REFERENCE - Theory 1 - The Data Maturity Model
-- 
+- "Maslow's pyramid of data":
+    1. Data collection
+        - Extraction of data from various source systems (e.g., sensors, Google Analytics, website clickstream logs, stock market, radiology image, APIs, transaction databases).
+        - Data can come in various formats, ways, intervals, quantities, qualities...
+        - Three Vs of big data: variety, velocity, volume. Must consider these when designing our data architecture, to build reliable, scalable, and maintainable systems.
+        - Raw data is loaded into a staging area.
+    2. Data wrangling
+        - Clean, transform, and map into format good for downstream purposes.
+        - I.e., converting from operational source format into data warehouse format.
+    3. Data integration
+        - Load clean data into data lake or warehouse.
+        - Writing our transformed data from the staging area to a target database, where analytics workflows will be performed.
+        - Can do a refresh (rewrite data completely, which will replace old data), or do an update (only the changes we apply to the source data are added).
+    4. BI and analytics
+    5. AI
+- The first three steps above are ETL, and we must also discuss ELT.
+    - Why has ETL been prevalent?
+        - Storage used to be extremely expensive.
+        - In 1967, a 1 MB hard drive costed $1 mil!
+        - Could not just scale up and down as we do today.
+        - Had to work with single node databases that had computing constraints.
+        - Were on-premise resources, and expensive due to perpetual licensing.
+        - Compute resources were scarce too.
+        - So it was very important to be selective with which data was persisted in a database, and it made sense to do transformations outside the database in a staging area.
+    - ETL issues:
+        - Schema changes -> model breaks.
+        - Data velocity changes over time, and scaling is/was hard.
+        - Takes time to add connections to new data sources.
+        - Difficult testing and debugging.
+    - ELT:
+        - Storage is much cheaper now: ~2 cents per GB.
+        - Since today's compute and storage resources are super cheap, there's no harm in loading raw data from source systems right into the destination, and it makes sense to reorganize the workflow to do the transformations inside the database rather than in an external processing layer.
+        - Can more easily handle issues with upstream schemas and downstream models.
+        - Tools like Fivetran and Stitch let us connect to source systems and load data into our destination with just a few clicks.
 
 # Section 30: REFERENCE - Theory 2 - Data Warehouses, Data Lakes and Lakehouses
 - 
