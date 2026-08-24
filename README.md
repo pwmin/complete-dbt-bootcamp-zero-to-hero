@@ -1,3 +1,5 @@
+**Credential**: https://www.udemy.com/certificate/UC-90a32724-a29c-483c-9a2a-4bf96d3e31ac
+
 **This is my learning journey.**
 
 # Section 1: Course Introduction
