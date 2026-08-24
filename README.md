@@ -27,7 +27,7 @@
 - Tech stack:
     - dbt (of course).
     - Snowflake: Cloud-based data warehouse.
-    - Preset: Managed super set BI tool.
+    - Preset: Managed Superset BI tool.
 - Feature requirements:
     - Modeling changes must be easy to follow and revert (i.e., version-controlled).
     - Make sure all dependencies (i.e., pipeline steps that feed and depend on each other) are:
